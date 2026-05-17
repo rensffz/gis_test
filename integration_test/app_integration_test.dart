@@ -95,7 +95,7 @@ class _TestApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       title: 'GIS Test',
-      routerConfig: ref.watch(routerProvider),
+      //routerConfig: ref.watch(routerProvider),
     );
   }
 }
