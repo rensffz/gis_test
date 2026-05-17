@@ -23,8 +23,9 @@ jobs:
         run: flutter pub get
       
       - name: Run tests
-        run: flutter test --machine > test-results.json
-      
+        run: |
+          flutter test --machine 2>&1 | grep '^{' > test_results.json
+        continue-on-error: true
       - name: Upload test results
         uses: dorny/test-reporter@v2
         if: always()
