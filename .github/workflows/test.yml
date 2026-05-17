@@ -24,7 +24,7 @@ jobs:
       
       - name: Run tests
         run: |
-          flutter test --machine 2>&1 | grep '^{' > test_results.json
+          flutter test --machine 2>&1 | grep '^{' > test-results.json
         continue-on-error: true
       - name: Upload test results
         uses: dorny/test-reporter@v2
