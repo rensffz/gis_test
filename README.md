@@ -1,3 +1,11 @@
+# GIS Monitor
+
+[![Flutter Tests](https://github.com/rensffz/gis_test/actions/workflows/test.yml/badge.svg)](https://github.com/rensffz/gis_test/actions/workflows/test.yml)
+[![Code Coverage](https://github.com/rensffz/gis_test/actions/workflows/coverage.yml/badge.svg)](https://github.com/rensffz/gis_test/actions/workflows/coverage.yml)
+
+## Описание
+GIS Monitor - приложение для работы с геоданными
+
 # gis_test
 
 A new Flutter project.
