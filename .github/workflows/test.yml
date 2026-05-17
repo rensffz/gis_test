@@ -26,7 +26,7 @@ jobs:
         run: flutter test --machine > test-results.json
       
       - name: Upload test results
-        uses: dorny/test-reporter@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           name: Flutter Tests

@@ -17,7 +17,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'   # убрала точную версию
+          channel: 'stable'   # убрали точную версию
       
       - name: Install dependencies
         run: flutter pub get
