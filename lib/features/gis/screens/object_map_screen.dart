@@ -26,17 +26,17 @@ class _ObjectMapScreenState extends ConsumerState<ObjectMapScreen>
   GisObject? _object;
 
   bool _mapReady = false;
-  LatLng _mapCenter = const LatLng(55.750, 37.620);
+  LatLng _mapCenter = const LatLng(55.470, 37.504);
   double _mapZoom = 13.0;
   int? _selectedPointIndex;
 
-  // Mock points — real coordinates, Moscow oblast area.
+  // Mock points — near the Desna river / meadow area, Podolsk district.
   // Will be replaced with server data when API is ready.
   final List<MapDemoPoint> _demoPoints = [
-    const MapDemoPoint(lat: 55.758, lng: 37.615, label: 'P-01', color: AppColors.layerPoint),
-    const MapDemoPoint(lat: 55.751, lng: 37.628, label: 'P-02', color: AppColors.layerPoint),
-    const MapDemoPoint(lat: 55.744, lng: 37.619, label: 'P-03', color: AppColors.layerPoint),
-    const MapDemoPoint(lat: 55.762, lng: 37.607, label: 'P-04', color: AppColors.layerPoint),
+    const MapDemoPoint(lat: 55.468, lng: 37.498, label: 'P-01', color: AppColors.layerPoint),
+    const MapDemoPoint(lat: 55.472, lng: 37.505, label: 'P-02', color: AppColors.layerPoint),
+    const MapDemoPoint(lat: 55.466, lng: 37.512, label: 'P-03', color: AppColors.layerPoint),
+    const MapDemoPoint(lat: 55.475, lng: 37.488, label: 'P-04', color: AppColors.layerPoint),
   ];
 
   @override
@@ -138,6 +138,8 @@ class _ObjectMapScreenState extends ConsumerState<ObjectMapScreen>
 
     final hasOrthophoto =
         layers.any((l) => l.type == LayerType.orthophoto && l.isVisible);
+    final hasSegmentation =
+        layers.any((l) => l.type == LayerType.segmentation && l.isVisible);
     final hasPoints =
         layers.any((l) => l.type == LayerType.points && l.isVisible);
 
@@ -211,7 +213,7 @@ class _ObjectMapScreenState extends ConsumerState<ObjectMapScreen>
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
-              initialCenter: const LatLng(55.750, 37.620),
+              initialCenter: const LatLng(55.470, 37.504),
               initialZoom: 13.0,
               onTap: (_, __) {
                 if (_selectedPointIndex != null) {
@@ -248,6 +250,19 @@ class _ObjectMapScreenState extends ConsumerState<ObjectMapScreen>
                         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                     userAgentPackageName: 'com.example.gis_app',
                   ),
+                ),
+              // Segmentation mock layer — hardcoded polygons around demo coords.
+              // Replace with server GeoJSON when SegFormer pipeline is ready.
+              if (hasSegmentation)
+                PolygonLayer(
+                  polygons: _kSegZones
+                      .map((z) => Polygon(
+                            points: z.points,
+                            color: z.color.withOpacity(0.45),
+                            borderColor: z.color.withOpacity(0.85),
+                            borderStrokeWidth: 1.5,
+                          ))
+                      .toList(),
                 ),
               // Points layer
               if (hasPoints)
@@ -325,7 +340,7 @@ class _ObjectMapScreenState extends ConsumerState<ObjectMapScreen>
                 onCenter: () {
                   if (_mapReady) {
                     _mapController.move(
-                        const LatLng(55.750, 37.620), 13.0);
+                        const LatLng(55.470, 37.504), 13.0);
                   }
                 },
                 onZoomIn: () {
@@ -358,6 +373,12 @@ class _ObjectMapScreenState extends ConsumerState<ObjectMapScreen>
               left: 0,
               right: 0,
               child: _StatusBar(layers: layers, isDark: isDark)),
+          if (hasSegmentation)
+            const Positioned(
+              bottom: 48,
+              left: 14,
+              child: _SegmentationLegend(),
+            ),
           if (_selectedPointIndex != null &&
               _mapReady &&
               _selectedPointIndex! < _demoPoints.length)
@@ -1604,6 +1625,150 @@ class _StoragePickerSheet extends ConsumerWidget {
                       },
                     )),
         ]),
+      ),
+    );
+  }
+}
+
+// ── Segmentation mock data ────────────────────────────────────
+
+class _SegZone {
+  final String label;
+  final Color color;
+  final List<LatLng> points;
+  const _SegZone({required this.label, required this.color, required this.points});
+}
+
+// Segmentation zones for the Desna river area, Podolsk district.
+// "Водоём" and "Луг" use real OSM geometry (Ways 100667930, 100667944).
+// Other zones are placed to match the real landscape.
+const _kSegZones = [
+  // Cropland — agricultural field northwest of the meadow
+  _SegZone(
+    label: 'Пашня',
+    color: Color(0xFF66BB6A),
+    points: [
+      LatLng(55.477, 37.480), LatLng(55.477, 37.493),
+      LatLng(55.473, 37.493), LatLng(55.469, 37.489),
+      LatLng(55.467, 37.484), LatLng(55.467, 37.480),
+    ],
+  ),
+  // Forest strip — narrow band along the northern edge
+  _SegZone(
+    label: 'Лесополоса',
+    color: Color(0xFF2E7D32),
+    points: [
+      LatLng(55.479, 37.478), LatLng(55.479, 37.525),
+      LatLng(55.477, 37.525), LatLng(55.477, 37.478),
+    ],
+  ),
+  // Луг — real OSM geometry, Way 100667944 (21 nodes)
+  _SegZone(
+    label: 'Луг',
+    color: Color(0xFF9CCC65),
+    points: [
+      LatLng(55.4699256, 37.4995350), LatLng(55.4698182, 37.4963062),
+      LatLng(55.4695082, 37.4937155), LatLng(55.4675583, 37.4952315),
+      LatLng(55.4682366, 37.4997489), LatLng(55.4680420, 37.5016587),
+      LatLng(55.4675025, 37.5050823), LatLng(55.4673444, 37.5053183),
+      LatLng(55.4671640, 37.5063058), LatLng(55.4675320, 37.5060773),
+      LatLng(55.4676774, 37.5060345), LatLng(55.4678940, 37.5059707),
+      LatLng(55.4680432, 37.5049625), LatLng(55.4681686, 37.5043067),
+      LatLng(55.4683824, 37.5037165), LatLng(55.4685078, 37.5030525),
+      LatLng(55.4688610, 37.5023639), LatLng(55.4690608, 37.5020770),
+      LatLng(55.4693860, 37.5012177), LatLng(55.4697886, 37.5001629),
+      LatLng(55.4699256, 37.4995350),
+    ],
+  ),
+  // Водоём — Река Десна, OSM Way 100667930.
+  // Polygon corridor: forward path (east bank) + return path (west bank, +0.001° lat).
+  _SegZone(
+    label: 'Водоём',
+    color: Color(0xFF1565C0),
+    points: [
+      // East bank (real centerline nodes, simplified)
+      LatLng(55.4749818, 37.4991137), LatLng(55.4756097, 37.5023200),
+      LatLng(55.4748645, 37.5048761), LatLng(55.4740870, 37.5059506),
+      LatLng(55.4737952, 37.5076672), LatLng(55.4735839, 37.5100905),
+      LatLng(55.4728027, 37.5111090), LatLng(55.4718735, 37.5125252),
+      LatLng(55.4692026, 37.5192629),
+      // West bank (reversed, +0.001° lat ≈ 111m offset)
+      LatLng(55.4702026, 37.5192629), LatLng(55.4728735, 37.5125252),
+      LatLng(55.4738027, 37.5111090), LatLng(55.4745839, 37.5100905),
+      LatLng(55.4747952, 37.5076672), LatLng(55.4750870, 37.5059506),
+      LatLng(55.4758645, 37.5048761), LatLng(55.4766097, 37.5023200),
+      LatLng(55.4759818, 37.4991137),
+    ],
+  ),
+  // Bare soil — south of the meadow, east of the river bend
+  _SegZone(
+    label: 'Голая земля',
+    color: Color(0xFF795548),
+    points: [
+      LatLng(55.465, 37.516), LatLng(55.465, 37.529),
+      LatLng(55.462, 37.529), LatLng(55.462, 37.519),
+      LatLng(55.464, 37.516),
+    ],
+  ),
+];
+
+// ── Segmentation legend ───────────────────────────────────────
+
+class _SegmentationLegend extends StatelessWidget {
+  const _SegmentationLegend();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+      decoration: BoxDecoration(
+        color: AppColors.bgDark.withOpacity(0.88),
+        borderRadius: BorderRadius.circular(9),
+        border: Border.all(color: const Color(0xFF7C4DFF).withOpacity(0.4)),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 3)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.auto_awesome,
+                size: 10, color: Color(0xFF7C4DFF)),
+            const SizedBox(width: 4),
+            const Text('AI СЕГМЕНТАЦИЯ',
+                style: TextStyle(
+                    fontSize: 8,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF7C4DFF),
+                    letterSpacing: 0.6,
+                    fontFamily: 'monospace')),
+          ]),
+          const SizedBox(height: 6),
+          ..._kSegZones.map((z) => Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                      width: 9,
+                      height: 9,
+                      decoration: BoxDecoration(
+                          color: z.color,
+                          borderRadius: BorderRadius.circular(2),
+                          border: Border.all(
+                              color: z.color.withOpacity(0.6),
+                              width: 0.5))),
+                  const SizedBox(width: 6),
+                  Text(z.label,
+                      style: const TextStyle(
+                          fontSize: 10,
+                          color: AppColors.textSecondary)),
+                ]),
+              )),
+        ],
       ),
     );
   }

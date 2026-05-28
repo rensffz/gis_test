@@ -77,25 +77,28 @@ class GisCategory {
 }
 
 // ─── LAYER TYPE ───────────────────────────────────────────────
-enum LayerType { area, points, orthophoto }
+enum LayerType { area, points, orthophoto, segmentation }
 
 extension LayerTypeX on LayerType {
   String get label => const {
-    LayerType.area:       'AREA',
-    LayerType.points:     'POINTS',
-    LayerType.orthophoto: 'ORTHOPHOTO',
+    LayerType.area:         'AREA',
+    LayerType.points:       'POINTS',
+    LayerType.orthophoto:   'ORTHOPHOTO',
+    LayerType.segmentation: 'AI SEG',
   }[this]!;
 
   IconData get icon => const {
-    LayerType.area:       Icons.pentagon_outlined,
-    LayerType.points:     Icons.radio_button_checked_rounded,
-    LayerType.orthophoto: Icons.grid_on_rounded,
+    LayerType.area:         Icons.pentagon_outlined,
+    LayerType.points:       Icons.radio_button_checked_rounded,
+    LayerType.orthophoto:   Icons.grid_on_rounded,
+    LayerType.segmentation: Icons.auto_awesome,
   }[this]!;
 
   Color get color => const {
-    LayerType.area:       AppColors.layerPolygon,
-    LayerType.points:     AppColors.layerPoint,
-    LayerType.orthophoto: AppColors.layerRaster,
+    LayerType.area:         AppColors.layerPolygon,
+    LayerType.points:       AppColors.layerPoint,
+    LayerType.orthophoto:   AppColors.layerRaster,
+    LayerType.segmentation: Color(0xFF7C4DFF),
   }[this]!;
 
   bool get supportsTable => this == LayerType.points;

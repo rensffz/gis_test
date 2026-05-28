@@ -41,6 +41,19 @@ final _seedGlobalFiles = [
 ];
 
 final _seedObjects = [
+  GisObject(
+    id: 'obj_ai',
+    name: 'Демо: AI-сегментация',
+    description: 'Автоматическое выделение зон на ортофотоплане. Пашня, лесополоса, водоём, дорога, голая земля, луг.',
+    category: _categories[0],
+    layers: const [
+      GisLayer(id: 'ai_l1', name: 'Ортофотоплан',      type: LayerType.orthophoto,   color: AppColors.layerRaster, isVisible: true,  objectsCount: 1, fileId: 'g_f1'),
+      GisLayer(id: 'ai_l2', name: 'AI: Сегментация',   type: LayerType.segmentation, color: Color(0xFF7C4DFF),     isVisible: true,  objectsCount: 6),
+      GisLayer(id: 'ai_l3', name: 'Точки измерений',   type: LayerType.points,       color: AppColors.layerPoint,  isVisible: true,  objectsCount: 4, tableId: 'tbl_1'),
+    ],
+    updatedAt: DateTime(2024, 4, 1),
+    icon: Icons.auto_awesome,
+  ),
   GisObject(id: 'obj_1', name: 'Поле №12 — Пшеница', description: 'Озимая пшеница, 48 га. Мониторинг вегетации 2024.', category: _categories[0], layers: _layers('obj_1'), updatedAt: DateTime(2024, 3, 20), icon: Icons.grass_rounded),
   GisObject(id: 'obj_2', name: 'Водохранилище Южное', description: 'Оросительный резервуар. Объём 120 000 м³.', category: _categories[1], layers: _layers('obj_2').take(3).toList(), updatedAt: DateTime(2024, 3, 18), icon: Icons.water_rounded),
   GisObject(id: 'obj_3', name: 'Дорога Р-217 (участок)', description: 'Грунтовая дорога, протяжённость 4.2 км.', category: _categories[2], layers: _layers('obj_3').take(2).toList(), updatedAt: DateTime(2024, 3, 10), icon: Icons.route_rounded),
