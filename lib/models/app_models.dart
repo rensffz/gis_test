@@ -245,15 +245,15 @@ class FileWithObject {
 
 // ─── MAP DEMO POINT ───────────────────────────────────────────
 class MapDemoPoint {
-  final double x, y;
+  final double lat, lng;
   final String label;
   final Color color;
   // Attribute values keyed by AttributeProperty.id, matching the linked table.
   final Map<String, String> attributes;
-  const MapDemoPoint({required this.x, required this.y, required this.label,
+  const MapDemoPoint({required this.lat, required this.lng, required this.label,
       required this.color, this.attributes = const {}});
   MapDemoPoint copyWith({String? label, Map<String, String>? attributes}) => MapDemoPoint(
-    x: x, y: y, label: label ?? this.label, color: color,
+    lat: lat, lng: lng, label: label ?? this.label, color: color,
     attributes: attributes ?? this.attributes);
 }
 

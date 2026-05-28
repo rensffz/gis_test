@@ -22,7 +22,7 @@ final _categories = [
 List<GisLayer> _layers(String pfx) => [
   GisLayer(id: '${pfx}_l1', name: 'Границы участка',  type: LayerType.area,       color: AppColors.layerPolygon, isVisible: true,  objectsCount: 3),
   GisLayer(id: '${pfx}_l2', name: 'Точки измерений',  type: LayerType.points,     color: AppColors.layerPoint,   isVisible: true,  objectsCount: 47, tableId: 'tbl_1'),
-  GisLayer(id: '${pfx}_l3', name: 'Ортофотоплан',     type: LayerType.orthophoto, color: AppColors.layerRaster,  isVisible: false, objectsCount: 1,  fileId: 'g_f1'),
+  GisLayer(id: '${pfx}_l3', name: 'Ортофотоплан',     type: LayerType.orthophoto, color: AppColors.layerRaster,  isVisible: true,  objectsCount: 1,  fileId: 'g_f1'),
   GisLayer(id: '${pfx}_l4', name: 'Контур поля',      type: LayerType.area,       color: AppColors.layerPolygon, isVisible: true,  objectsCount: 12),
 ];
 
