@@ -76,6 +76,8 @@ final _seedTables = [
 const _kUsers      = 'repo_users';
 const _kSaved      = 'repo_saved_accounts';
 const _kAuthLogin  = 'repo_auth_login';
+const _kSyncStatus = 'repo_sync_status';
+
 
 // ─── Encode / decode helpers ──────────────────────────────────
 
@@ -169,6 +171,17 @@ class AppRepository {
   void persistAuth(String login) => _prefs.setString(_kAuthLogin, login);
 
   void clearAuth() => _prefs.remove(_kAuthLogin);
+
+  SyncStatus getSyncStatus() {
+      final stored = _prefs.getString(_kSyncStatus);
+      return SyncStatus.values.firstWhere(
+        (s) => s.name == stored,
+        orElse: () => SyncStatus.localOnly,
+      );
+    } 
+    
+    void persistSyncStatus(SyncStatus status) =>
+        _prefs.setString(_kSyncStatus, status.name);
 
   // ── Auth ──────────────────────────────────────────────────
 

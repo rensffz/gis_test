@@ -256,3 +256,6 @@ class MapDemoPoint {
     x: x, y: y, label: label ?? this.label, color: color,
     attributes: attributes ?? this.attributes);
 }
+
+// ─── SYNC STATUS ──────────────────────────────────────────────
+  enum SyncStatus { localOnly, pending, synced, conflict }
