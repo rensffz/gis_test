@@ -54,9 +54,6 @@ class GisObjectCard extends StatelessWidget {
                 Row(children: [
                   _Chip(icon: Icons.layers_outlined, label: '${object.layerCount} слоёв', color: AppColors.layerPolygon, isDark: isDark),
                   const Spacer(),
-                  Icon(Icons.history_rounded, size: 12, color: AppColors.textMuted),
-                  const SizedBox(width: 3),
-                  Text(_fmt(object.updatedAt), style: const TextStyle(fontSize: 10, color: AppColors.textMuted)),
                   const SizedBox(width: 8),
                   _ActBtn(Icons.edit_outlined, onEdit),
                   const SizedBox(width: 3),

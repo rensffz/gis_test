@@ -12,11 +12,9 @@ import '../core/app_theme.dart';
 // ─── Seed data ────────────────────────────────────────────────
 
 final _categories = [
-  const GisCategory(id: 'cat_1', name: 'Сельхозугодья',  color: AppColors.layerPoint,    icon: Icons.grass_rounded),
-  const GisCategory(id: 'cat_2', name: 'Водные объекты', color: AppColors.layerPolygon,  icon: Icons.water_rounded),
-  const GisCategory(id: 'cat_3', name: 'Дороги',         color: AppColors.layerPolyline, icon: Icons.route_rounded),
-  const GisCategory(id: 'cat_4', name: 'Строения',       color: AppColors.layerRaster,   icon: Icons.warehouse_rounded),
-  const GisCategory(id: 'cat_5', name: 'Лесной фонд',    color: AppColors.layerHeatmap,  icon: Icons.park_rounded),
+  const GisCategory(id: 'cat_1', name: 'Городские экосистемы', color: AppColors.layerRaster,   icon: Icons.apartment_rounded),
+  const GisCategory(id: 'cat_2', name: 'Лесные экосистемы',    color: AppColors.layerHeatmap,  icon: Icons.park_rounded),
+  const GisCategory(id: 'cat_3', name: 'Сельские экосистемы',  color: AppColors.layerPoint,    icon: Icons.grass_rounded),
 ];
 
 List<GisLayer> _layers(String pfx) => [
@@ -45,7 +43,7 @@ final _seedObjects = [
     id: 'obj_ai',
     name: 'Демо: AI-сегментация',
     description: 'Автоматическое выделение зон на ортофотоплане. Пашня, лесополоса, водоём, дорога, голая земля, луг.',
-    category: _categories[0],
+    category: _categories[1],
     layers: const [
       GisLayer(id: 'ai_l1', name: 'Ортофотоплан',      type: LayerType.orthophoto,   color: AppColors.layerRaster, isVisible: true,  objectsCount: 1, fileId: 'g_f1'),
       GisLayer(id: 'ai_l2', name: 'AI: Сегментация',   type: LayerType.segmentation, color: Color(0xFF7C4DFF),     isVisible: true,  objectsCount: 6),
@@ -54,12 +52,12 @@ final _seedObjects = [
     updatedAt: DateTime(2024, 4, 1),
     icon: Icons.auto_awesome,
   ),
-  GisObject(id: 'obj_1', name: 'Поле №12 — Пшеница', description: 'Озимая пшеница, 48 га. Мониторинг вегетации 2024.', category: _categories[0], layers: _layers('obj_1'), updatedAt: DateTime(2024, 3, 20), icon: Icons.grass_rounded),
-  GisObject(id: 'obj_2', name: 'Водохранилище Южное', description: 'Оросительный резервуар. Объём 120 000 м³.', category: _categories[1], layers: _layers('obj_2').take(3).toList(), updatedAt: DateTime(2024, 3, 18), icon: Icons.water_rounded),
-  GisObject(id: 'obj_3', name: 'Дорога Р-217 (участок)', description: 'Грунтовая дорога, протяжённость 4.2 км.', category: _categories[2], layers: _layers('obj_3').take(2).toList(), updatedAt: DateTime(2024, 3, 10), icon: Icons.route_rounded),
-  GisObject(id: 'obj_4', name: 'Ферма "Зарево"', description: 'Животноводческий комплекс. Площадь 6.8 га.', category: _categories[3], layers: _layers('obj_4'), updatedAt: DateTime(2024, 3, 22), icon: Icons.warehouse_rounded),
-  GisObject(id: 'obj_5', name: 'Лесополоса №7', description: 'Защитная лесополоса. Береза, дуб. Длина 1.8 км.', category: _categories[4], layers: _layers('obj_5').take(3).toList(), updatedAt: DateTime(2024, 3, 5), icon: Icons.park_rounded),
-  GisObject(id: 'obj_6', name: 'Поле №8 — Подсолнечник', description: 'Подсолнечник, 63 га. Урожайность 2023: 24 ц/га.', category: _categories[0], layers: _layers('obj_6').take(3).toList(), updatedAt: DateTime(2024, 2, 28), icon: Icons.brightness_7_rounded),
+  GisObject(id: 'obj_1', name: 'Поле №12 — Пшеница',      description: 'Озимая пшеница, 48 га. Мониторинг вегетации 2024.',      category: _categories[2], layers: _layers('obj_1'),                  updatedAt: DateTime(2024, 3, 20), icon: Icons.grass_rounded),
+  GisObject(id: 'obj_2', name: 'Водохранилище Южное',      description: 'Оросительный резервуар. Объём 120 000 м³.',               category: _categories[1], layers: _layers('obj_2').take(3).toList(), updatedAt: DateTime(2024, 3, 18), icon: Icons.water_rounded),
+  GisObject(id: 'obj_3', name: 'Дорога Р-217 (участок)',   description: 'Грунтовая дорога, протяжённость 4.2 км.',                 category: _categories[0], layers: _layers('obj_3').take(2).toList(), updatedAt: DateTime(2024, 3, 10), icon: Icons.route_rounded),
+  GisObject(id: 'obj_4', name: 'Ферма "Зарево"',           description: 'Животноводческий комплекс. Площадь 6.8 га.',             category: _categories[2], layers: _layers('obj_4'),                  updatedAt: DateTime(2024, 3, 22), icon: Icons.warehouse_rounded),
+  GisObject(id: 'obj_5', name: 'Лесополоса №7',            description: 'Защитная лесополоса. Береза, дуб. Длина 1.8 км.',        category: _categories[1], layers: _layers('obj_5').take(3).toList(), updatedAt: DateTime(2024, 3, 5),  icon: Icons.park_rounded),
+  GisObject(id: 'obj_6', name: 'Поле №8 — Подсолнечник',   description: 'Подсолнечник, 63 га. Урожайность 2023: 24 ц/га.',        category: _categories[2], layers: _layers('obj_6').take(3).toList(), updatedAt: DateTime(2024, 2, 28), icon: Icons.brightness_7_rounded),
 ];
 
 final _seedTables = [
@@ -316,6 +314,17 @@ class AppRepository {
   Future<void> addObject(GisObject obj) async {
     await Future.delayed(_ds);
     _objects.insert(0, obj);
+  }
+
+  Future<void> updateObject(GisObject updated) async {
+    await Future.delayed(_ds);
+    final idx = _objects.indexWhere((o) => o.id == updated.id);
+    if (idx != -1) _objects[idx] = updated;
+  }
+
+  Future<void> deleteObject(String id) async {
+    await Future.delayed(_ds);
+    _objects.removeWhere((o) => o.id == id);
   }
 
   Future<void> addLayer(String objectId, GisLayer layer) async {

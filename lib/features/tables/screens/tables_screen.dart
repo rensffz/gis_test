@@ -99,20 +99,20 @@ class _TablesScreenState extends ConsumerState<TablesScreen> {
     if (widget.embedded) {
       return Stack(children: [
         body,
-        Positioned(bottom: 24, right: 20, child: FloatingActionButton.extended(
+        Positioned(bottom: 24, right: 20, child: FloatingActionButton(
           heroTag: 'add_tbl', onPressed: () => _openEditor(),
-          icon: const Icon(Icons.add_rounded), label: const Text('Новая таблица', style: TextStyle(fontWeight: FontWeight.w600)),
-          backgroundColor: AppColors.accent, foregroundColor: AppColors.bgDark)),
+          backgroundColor: AppColors.accent, foregroundColor: AppColors.bgDark,
+          child: const Icon(Icons.add_rounded))),
       ]);
     }
 
     return Scaffold(
       appBar: GisAppBar(title: 'Таблицы атрибутов', showDrawer: true),
       body: body,
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         heroTag: 'add_tbl_main', onPressed: () => _openEditor(),
-        icon: const Icon(Icons.add_rounded), label: const Text('Новая таблица', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: AppColors.accent, foregroundColor: AppColors.bgDark),
+        backgroundColor: AppColors.accent, foregroundColor: AppColors.bgDark,
+        child: const Icon(Icons.add_rounded)),
     );
   }
 }
@@ -189,8 +189,6 @@ class _TableCardState extends State<_TableCard> with SingleTickerProviderStateMi
                     Row(children: [
                       _Chip2(Icons.tune_rounded, '${widget.table.propertyCount} свойств', AppColors.layerPolygon, widget.isDark),
                       const Spacer(),
-                      Icon(Icons.history_rounded, size: 12, color: AppColors.textMuted), const SizedBox(width: 3),
-                      Text(_fmt(widget.table.updatedAt), style: const TextStyle(fontSize: 10, color: AppColors.textMuted)),
                       const SizedBox(width: 10),
                       _SmAct(Icons.edit_outlined, widget.onEdit),
                       const SizedBox(width: 3),

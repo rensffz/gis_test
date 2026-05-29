@@ -96,6 +96,38 @@ class _ObjectsTab extends ConsumerStatefulWidget {
 }
 
 class _ObjectsTabState extends ConsumerState<_ObjectsTab> {
+  Future<void> _deleteObject(BuildContext context, GisObject obj) async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? AppColors.cardDark : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+        title: const Text('Удалить объект?',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        content: Text('«${obj.name}» и все его слои будут удалены.',
+            style: const TextStyle(fontSize: 13, height: 1.5)),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Отмена')),
+          FilledButton(
+              style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.error,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9))),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Удалить')),
+        ],
+      ),
+    );
+    if (ok == true && mounted) {
+      await ref.read(repoProvider).deleteObject(obj.id);
+      ref.invalidate(objectsProvider);
+      if (mounted) showAppSnackbar(context, '«${obj.name}» удалён', icon: Icons.delete_outline_rounded);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -166,8 +198,11 @@ class _ObjectsTabState extends ConsumerState<_ObjectsTab> {
                 itemBuilder: (_, i) => GisObjectCard(
                   object: objects[i],
                   onTap: () => context.go('/objects/${objects[i].id}/map', extra: objects[i]),
-                  onEdit: () => showAppSnackbar(context, 'Редактирование объекта будет реализовано', icon: Icons.info_outline_rounded),
-                  onDelete: () => showAppSnackbar(context, 'Удаление объекта будет реализовано', icon: Icons.info_outline_rounded),
+                  onEdit: () => showDialog(
+                    context: context,
+                    builder: (_) => _EditObjectDialog(object: objects[i]),
+                  ),
+                  onDelete: () => _deleteObject(context, objects[i]),
                 ),
               );
             },
@@ -262,6 +297,117 @@ class _CreateObjectDialogState extends ConsumerState<_CreateObjectDialog> {
           child: _saving
               ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
               : const Text('Создать'),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Edit GIS Object dialog ───────────────────────────────────
+class _EditObjectDialog extends ConsumerStatefulWidget {
+  final GisObject object;
+  const _EditObjectDialog({required this.object});
+  @override
+  ConsumerState<_EditObjectDialog> createState() => _EditObjectDialogState();
+}
+
+class _EditObjectDialogState extends ConsumerState<_EditObjectDialog> {
+  late final TextEditingController _nameCtrl;
+  late final TextEditingController _descCtrl;
+  late GisCategory? _category;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameCtrl = TextEditingController(text: widget.object.name);
+    _descCtrl = TextEditingController(text: widget.object.description);
+    _category = widget.object.category;
+  }
+
+  @override
+  void dispose() { _nameCtrl.dispose(); _descCtrl.dispose(); super.dispose(); }
+
+  Future<void> _submit() async {
+    final name = _nameCtrl.text.trim();
+    if (name.isEmpty || _category == null) return;
+    setState(() => _saving = true);
+    final cat = _category!;
+    final updated = GisObject(
+      id: widget.object.id,
+      name: name,
+      description: _descCtrl.text.trim(),
+      category: cat,
+      layers: widget.object.layers,
+      updatedAt: DateTime.now(),
+      icon: cat.icon,
+    );
+    await ref.read(repoProvider).updateObject(updated);
+    ref.invalidate(objectsProvider);
+    if (!mounted) return;
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final catsAsync = ref.watch(categoriesProvider);
+    return AlertDialog(
+      title: const Text('Редактировать объект',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+      content: catsAsync.when(
+        loading: () => const SizedBox(
+            height: 60,
+            child: Center(child: CircularProgressIndicator(color: AppColors.accent))),
+        error: (e, _) => Text(e.toString()),
+        data: (cats) => Column(mainAxisSize: MainAxisSize.min, children: [
+          TextField(
+            controller: _nameCtrl,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: const InputDecoration(
+              labelText: 'Название',
+              labelStyle: TextStyle(color: AppColors.textMuted, fontSize: 13),
+            ),
+          ),
+          const SizedBox(height: 12),
+          DropdownButtonFormField<GisCategory>(
+            value: cats.any((c) => c.id == _category?.id)
+                ? cats.firstWhere((c) => c.id == _category!.id)
+                : null,
+            hint: const Text('Выберите категорию',
+                style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+            items: cats.map((c) => DropdownMenuItem(
+                value: c,
+                child: Text(c.name,
+                    style: const TextStyle(fontSize: 13)))).toList(),
+            onChanged: (v) => setState(() => _category = v),
+            decoration: const InputDecoration(
+              labelText: 'Категория',
+              labelStyle: TextStyle(color: AppColors.textMuted, fontSize: 13),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _descCtrl,
+            textCapitalization: TextCapitalization.sentences,
+            maxLines: 2,
+            decoration: const InputDecoration(
+              labelText: 'Описание',
+              labelStyle: TextStyle(color: AppColors.textMuted, fontSize: 13),
+            ),
+          ),
+        ]),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Отмена')),
+        ElevatedButton(
+          onPressed: _saving || _category == null ? null : _submit,
+          child: _saving
+              ? const SizedBox(
+                  width: 16, height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2))
+              : const Text('Сохранить'),
         ),
       ],
     );

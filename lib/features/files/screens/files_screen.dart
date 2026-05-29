@@ -40,7 +40,7 @@ class _FilesScreenState extends ConsumerState<FilesScreen> {
       backgroundColor: isDark ? AppColors.bgDark : AppColors.bgLight,
       floatingActionButton: hasSelection
           ? null
-          : FloatingActionButton.extended(
+          : FloatingActionButton(
               onPressed: () => showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
@@ -49,9 +49,7 @@ class _FilesScreenState extends ConsumerState<FilesScreen> {
               ),
               backgroundColor: AppColors.accent,
               foregroundColor: AppColors.bgDark,
-              icon: const Icon(Icons.add_rounded, size: 20),
-              label: const Text('Добавить',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+              child: const Icon(Icons.add_rounded),
             ),
       appBar: GisAppBar(
         title: hasSelection ? '${selectedIds.length} выбрано' : 'Файлы',
