@@ -31,7 +31,7 @@ void main() {
       test('возвращает seed-объекты', () async {
         final objects = await repo.fetchObjects();
         expect(objects, isNotEmpty);
-        expect(objects.length, equals(6)); // seed data contains 6 objects
+        expect(objects.length, equals(7)); // 6 base + 1 AI demo object
       });
 
       test('список неизменяемый', () async {
@@ -162,6 +162,108 @@ void main() {
         await repo.addLayer('obj_1', newLayer);
         final layers = await repo.fetchLayers('obj_1');
         expect(layers.any((l) => l.id == 'auto_init_layer'), isTrue);
+      });
+    });
+
+    group('updateObject', () {
+      test('обновляет название объекта', () async {
+        final objects = await repo.fetchObjects();
+        final original = objects.firstWhere((o) => o.id == 'obj_1');
+        final updated = GisObject(
+          id: original.id, name: 'Обновлённое название',
+          description: original.description, category: original.category,
+          layers: original.layers, updatedAt: DateTime.now(),
+          icon: original.icon,
+        );
+        await repo.updateObject(updated);
+        final afterUpdate = await repo.fetchObjects();
+        final found = afterUpdate.firstWhere((o) => o.id == 'obj_1');
+        expect(found.name, equals('Обновлённое название'));
+      });
+
+      test('обновляет описание объекта', () async {
+        final objects = await repo.fetchObjects();
+        final original = objects.firstWhere((o) => o.id == 'obj_1');
+        final updated = GisObject(
+          id: original.id, name: original.name,
+          description: 'Новое описание', category: original.category,
+          layers: original.layers, updatedAt: DateTime.now(),
+          icon: original.icon,
+        );
+        await repo.updateObject(updated);
+        final afterUpdate = await repo.fetchObjects();
+        expect(afterUpdate.firstWhere((o) => o.id == 'obj_1').description,
+            equals('Новое описание'));
+      });
+
+      test('не изменяет другие объекты', () async {
+        final before = await repo.fetchObjects();
+        final obj2Before = before.firstWhere((o) => o.id == 'obj_2');
+        final obj1 = before.firstWhere((o) => o.id == 'obj_1');
+
+        await repo.updateObject(GisObject(
+          id: obj1.id, name: 'Изменён', description: obj1.description,
+          category: obj1.category, layers: obj1.layers,
+          updatedAt: DateTime.now(), icon: obj1.icon,
+        ));
+
+        final after = await repo.fetchObjects();
+        final obj2After = after.firstWhere((o) => o.id == 'obj_2');
+        expect(obj2After.name, equals(obj2Before.name));
+      });
+
+      test('несуществующий id — не падает', () async {
+        final phantom = makeGisObject(id: 'no_such_id', name: 'Phantom');
+        await expectLater(repo.updateObject(phantom), completes);
+      });
+
+      test('количество объектов не меняется', () async {
+        final before = (await repo.fetchObjects()).length;
+        final obj = (await repo.fetchObjects()).first;
+        await repo.updateObject(GisObject(
+          id: obj.id, name: 'x', description: obj.description,
+          category: obj.category, layers: obj.layers,
+          updatedAt: DateTime.now(), icon: obj.icon,
+        ));
+        final after = (await repo.fetchObjects()).length;
+        expect(after, equals(before));
+      });
+    });
+
+    group('deleteObject', () {
+      test('удаляет объект по id', () async {
+        final before = await repo.fetchObjects();
+        final toDelete = before.firstWhere((o) => o.id == 'obj_1');
+        await repo.deleteObject(toDelete.id);
+        final after = await repo.fetchObjects();
+        expect(after.any((o) => o.id == 'obj_1'), isFalse);
+      });
+
+      test('уменьшает количество объектов на 1', () async {
+        final before = (await repo.fetchObjects()).length;
+        await repo.deleteObject('obj_1');
+        final after = (await repo.fetchObjects()).length;
+        expect(after, equals(before - 1));
+      });
+
+      test('удаление несуществующего id — не падает', () async {
+        await expectLater(repo.deleteObject('no_such_id'), completes);
+      });
+
+      test('не удаляет другие объекты', () async {
+        await repo.deleteObject('obj_1');
+        final after = await repo.fetchObjects();
+        expect(after.any((o) => o.id == 'obj_2'), isTrue);
+        expect(after.any((o) => o.id == 'obj_3'), isTrue);
+      });
+
+      test('удаление всех объектов одного за другим', () async {
+        final all = await repo.fetchObjects();
+        for (final obj in all) {
+          await repo.deleteObject(obj.id);
+        }
+        final after = await repo.fetchObjects();
+        expect(after, isEmpty);
       });
     });
   });

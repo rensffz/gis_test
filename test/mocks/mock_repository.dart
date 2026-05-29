@@ -133,3 +133,27 @@ extension MockRepoFilesStubs on MockAppRepository {
     when(() => deleteFiles(any())).thenReturn(null);
   }
 }
+
+extension MockRepoObjectsStubs on MockAppRepository {
+  void stubFetchObjects(List<GisObject> objects) {
+    when(() => fetchObjects()).thenAnswer((_) async => objects);
+  }
+
+  void stubAddObject() {
+    when(() => addObject(any())).thenAnswer((_) async {});
+  }
+
+  void stubUpdateObject() {
+    when(() => updateObject(any())).thenAnswer((_) async {});
+  }
+
+  void stubDeleteObject() {
+    when(() => deleteObject(any())).thenAnswer((_) async {});
+  }
+}
+
+extension MockRepoGisStubs on MockAppRepository {
+  void stubFetchCategories(List<GisCategory> cats) {
+    when(() => fetchCategories()).thenAnswer((_) async => cats);
+  }
+}

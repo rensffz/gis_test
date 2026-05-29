@@ -227,28 +227,28 @@ AttributeTable makeTable({
 // ─── MapDemoPoint ─────────────────────────────────────────────
 
 const kTestPoint1 = MapDemoPoint(
-  x: 0.25,
-  y: 0.35,
+  lat: 55.468,
+  lng: 37.498,
   label: 'P-01',
   color: Color(0xFF00D4AA),
 );
 
 const kTestPoint2 = MapDemoPoint(
-  x: 0.55,
-  y: 0.45,
+  lat: 55.472,
+  lng: 37.505,
   label: 'P-02',
   color: Color(0xFF00D4AA),
   attributes: {'prop_str_1': 'значение', 'prop_int_1': '42'},
 );
 
 MapDemoPoint makePoint({
-  double x = 0.5,
-  double y = 0.5,
+  double lat = 55.470,
+  double lng = 37.504,
   String label = 'P-00',
   Color color = const Color(0xFF00D4AA),
   Map<String, String> attributes = const {},
 }) =>
-    MapDemoPoint(x: x, y: y, label: label, color: color, attributes: attributes);
+    MapDemoPoint(lat: lat, lng: lng, label: label, color: color, attributes: attributes);
 
 // ─── FileWithObject ───────────────────────────────────────────
 

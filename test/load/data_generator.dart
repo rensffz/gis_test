@@ -94,13 +94,14 @@ List<FileWithObject> generateFilesWithObjects(int count) {
 }
 
 /// Генерирует MapDemoPoint для нагрузочного теста.
+/// Координаты распределены в пределах демо-области (р-н Подольска).
 List<MapDemoPoint> generatePoints(int count) {
   return List.generate(count, (i) {
-    final x = (i % 100) / 100.0;
-    final y = (i ~/ 100) / 100.0;
+    final lat = 55.44 + (i % 100) / 100.0 * 0.06; // 55.44 – 55.50
+    final lng = 37.47 + (i ~/ 100) / 100.0 * 0.06; // 37.47 – 37.53
     return MapDemoPoint(
-      x: x.clamp(0.0, 1.0),
-      y: y.clamp(0.0, 1.0),
+      lat: lat,
+      lng: lng,
       label: 'P-${i.toString().padLeft(4, '0')}',
       color: const Color(0xFF00D4AA),
     );

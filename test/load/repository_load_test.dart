@@ -27,7 +27,7 @@ void main() {
       test('fetchObjects возвращает все seed-объекты', () async {
         final objects = await repo.fetchObjects();
         expect(objects, isNotEmpty);
-        expect(objects.length, equals(6));
+        expect(objects.length, equals(7)); // 6 base + 1 AI demo object
       });
 
       test('addObject × 10 — объекты сохраняются', () async {
@@ -52,8 +52,8 @@ void main() {
           await repo.addObject(obj);
         }
         final all = await repo.fetchObjects();
-        // 6 seed + 20 added
-        expect(all.length, equals(26));
+        // 7 seed + 20 added
+        expect(all.length, equals(27));
       }, timeout: const Timeout(Duration(seconds: 30)));
     });
 

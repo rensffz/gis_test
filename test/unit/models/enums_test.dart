@@ -8,6 +8,7 @@ void main() {
       test('area → AREA', () => expect(LayerType.area.label, equals('AREA')));
       test('points → POINTS', () => expect(LayerType.points.label, equals('POINTS')));
       test('orthophoto → ORTHOPHOTO', () => expect(LayerType.orthophoto.label, equals('ORTHOPHOTO')));
+      test('segmentation → AI SEG', () => expect(LayerType.segmentation.label, equals('AI SEG')));
     });
 
     group('icon', () {
@@ -31,6 +32,7 @@ void main() {
         expect(LayerType.points.supportsTable, isTrue);
         expect(LayerType.area.supportsTable, isFalse);
         expect(LayerType.orthophoto.supportsTable, isFalse);
+        expect(LayerType.segmentation.supportsTable, isFalse);
       });
     });
 
@@ -39,6 +41,7 @@ void main() {
         expect(LayerType.orthophoto.requiresFile, isTrue);
         expect(LayerType.area.requiresFile, isFalse);
         expect(LayerType.points.requiresFile, isFalse);
+        expect(LayerType.segmentation.requiresFile, isFalse);
       });
     });
   });

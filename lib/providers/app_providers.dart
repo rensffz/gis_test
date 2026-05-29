@@ -47,8 +47,11 @@
     // ── Helpers ───────────────────────────────────────────────
 
     void _setSyncStatus(SyncStatus status) {
+      if (!mounted) return;
       _repo.persistSyncStatus(status);
-      _ref.read(userSyncStatusProvider.notifier).state = status;
+      try {
+        _ref.read(userSyncStatusProvider.notifier).state = status;
+      } catch (_) {}
     }
 
     // ── Session restore ───────────────────────────────────────
@@ -152,20 +155,20 @@
     // GET /user → merge into local state.
     // Called on: app restore, login, quickLogin.
     Future<void> _syncFromServer() async {
-      if (state == null) return;
+      if (state == null || !mounted) return;
       _setSyncStatus(SyncStatus.pending);
       try {
         final dto = await _api.getUser(id: state!.id);
+        if (!mounted) return;
         if (dto == null) {
-          // User not on server yet — treat as localOnly, not an error.
           _setSyncStatus(SyncStatus.localOnly);
           return;
         }
-        if (state == null) return; // user logged out during request
-        // Preserve local passwordHash — server never returns it.
+        if (state == null || !mounted) return;
         final merged = dto.toAppUser(passwordHash: state!.passwordHash);
         final currentLogin = state!.login;
         await _repo.updateProfile(merged);
+        if (!mounted) return;
         _repo.updateSavedAccount(currentLogin, merged);
         if (merged.login != currentLogin) _repo.persistAuth(merged.login);
         state = merged;
@@ -175,15 +178,14 @@
           _setSyncStatus(SyncStatus.conflict);
           return;
         }
-        // Timeout / no internet / server down — silently keep local state.
         _setSyncStatus(SyncStatus.localOnly);
       } catch (_) {
         _setSyncStatus(SyncStatus.localOnly);
       }
     }
 
-    // POST /user — called once after successful registration.
     Future<void> _createOnServer(AppUser user, String password) async {
+      if (!mounted) return;
       _setSyncStatus(SyncStatus.pending);
       try {
         final dto = UserDto.fromAppUser(user);
@@ -196,15 +198,17 @@
       }
     }
 
-    // PUT /user — called after every successful profile update.
     Future<void> _pushToServer(AppUser user) async {
+      if (!mounted) return;
       _setSyncStatus(SyncStatus.pending);
       try {
         final dto = UserDto.fromAppUser(user);
         final result = await _api.updateUser(dto);
+        if (!mounted) return;
         if (result != null && state != null) {
           final serverUser = result.toAppUser(passwordHash: state!.passwordHash);
           await _repo.updateProfile(serverUser);
+          if (!mounted) return;
           state = serverUser;
         }
         _setSyncStatus(SyncStatus.synced);
@@ -219,12 +223,12 @@
       }
     }
 
-    // PATCH /user — called after successful local password change.
     Future<void> _pushPasswordToServer(
       String login,
       String currentPassword,
       String newPassword,
     ) async {
+      if (!mounted) return;
       _setSyncStatus(SyncStatus.pending);
       try {
         await _api.updatePassword(

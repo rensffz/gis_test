@@ -78,16 +78,21 @@ void main() {
   });
 
   group('MapDemoPoint', () {
-    test('хранит координаты в диапазоне 0-1', () {
-      expect(kTestPoint1.x, inInclusiveRange(0.0, 1.0));
-      expect(kTestPoint1.y, inInclusiveRange(0.0, 1.0));
+    test('хранит координаты в допустимом диапазоне WGS84', () {
+      expect(kTestPoint1.lat, inInclusiveRange(-90.0, 90.0));
+      expect(kTestPoint1.lng, inInclusiveRange(-180.0, 180.0));
+    });
+
+    test('хранит реальные координаты демо-области', () {
+      expect(kTestPoint1.lat, closeTo(55.468, 0.001));
+      expect(kTestPoint1.lng, closeTo(37.498, 0.001));
     });
 
     test('copyWith обновляет label', () {
       final updated = kTestPoint1.copyWith(label: 'P-99');
       expect(updated.label, equals('P-99'));
-      expect(updated.x, equals(kTestPoint1.x));
-      expect(updated.y, equals(kTestPoint1.y));
+      expect(updated.lat, equals(kTestPoint1.lat));
+      expect(updated.lng, equals(kTestPoint1.lng));
       expect(updated.color, equals(kTestPoint1.color));
     });
 
@@ -112,16 +117,16 @@ void main() {
     });
 
     group('edge cases', () {
-      test('граничные координаты 0.0, 0.0', () {
-        final p = makePoint(x: 0.0, y: 0.0);
-        expect(p.x, equals(0.0));
-        expect(p.y, equals(0.0));
+      test('южное полушарие — отрицательная широта', () {
+        final p = makePoint(lat: -33.9, lng: 18.4); // Cape Town
+        expect(p.lat, equals(-33.9));
+        expect(p.lng, equals(18.4));
       });
 
-      test('граничные координаты 1.0, 1.0', () {
-        final p = makePoint(x: 1.0, y: 1.0);
-        expect(p.x, equals(1.0));
-        expect(p.y, equals(1.0));
+      test('западное полушарие — отрицательная долгота', () {
+        final p = makePoint(lat: 40.7, lng: -74.0); // New York
+        expect(p.lat, equals(40.7));
+        expect(p.lng, equals(-74.0));
       });
 
       test('пустой label допустим', () {
