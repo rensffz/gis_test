@@ -1,0 +1,1534 @@
+ОПИСАНИЕ ТЕСТОВ — GIS Monitor
+Формат: ID | Название | Описание | Тип | Тип2
+Всего тестов: 342
+================================================================================
+
+════════════════════════════════════════════════════════════════════════════════
+МОДЕЛИ (test/unit/models/)
+════════════════════════════════════════════════════════════════════════════════
+
+── AppUser (app_user_test.dart) ────────────────────────────────────────────────
+
+1  | AppUser.fullName — оба поля заполнены
+   | fullName возвращает строку "Имя Фамилия", когда firstName и lastName оба непустые
+   | Блочный | Позитивный
+
+2  | AppUser.fullName — только имя
+   | fullName возвращает только firstName, когда lastName — пустая строка
+   | Блочный | Позитивный
+
+3  | AppUser.fullName — только фамилия
+   | fullName возвращает только lastName, когда firstName — пустая строка
+   | Блочный | Позитивный
+
+4  | AppUser.fullName — оба пустые
+   | fullName возвращает значение login, когда firstName и lastName оба пустые
+   | Блочный | Позитивный
+
+5  | AppUser.initials — оба поля заполнены
+   | initials возвращает заглавные первые буквы имени и фамилии (например "ИП")
+   | Блочный | Позитивный
+
+6  | AppUser.initials — только имя
+   | initials возвращает первую букву firstName, когда lastName пустая
+   | Блочный | Позитивный
+
+7  | AppUser.initials — оба пустые
+   | initials возвращает первую букву login, когда firstName и lastName оба пустые
+   | Блочный | Позитивный
+
+8  | AppUser.copyWith — обновление одного поля
+   | copyWith обновляет только переданный аргумент (firstName); остальные поля (id, login, lastName, email) не меняются
+   | Блочный | Позитивный
+
+9  | AppUser.copyWith — обновление email
+   | copyWith корректно обновляет поле email, оставляя остальные поля прежними
+   | Блочный | Позитивный
+
+10 | AppUser.copyWith — обновление organization
+   | copyWith корректно обновляет поле organization
+   | Блочный | Позитивный
+
+11 | AppUser.copyWith — без аргументов
+   | copyWith без аргументов возвращает объект с теми же значениями всех полей
+   | Блочный | Позитивный
+
+12 | SavedAccount — хранение полей
+   | SavedAccount корректно хранит login, displayName и initials
+   | Блочный | Позитивный
+
+13 | GisCategory — хранение полей
+   | GisCategory корректно хранит id, name, color (не null) и icon (не null)
+   | Блочный | Позитивный
+
+── Enums (enums_test.dart) ─────────────────────────────────────────────────────
+
+14 | LayerType.area.label
+   | Свойство label перечисления LayerType.area возвращает строку "AREA"
+   | Блочный | Позитивный
+
+15 | LayerType.points.label
+   | Свойство label перечисления LayerType.points возвращает строку "POINTS"
+   | Блочный | Позитивный
+
+16 | LayerType.orthophoto.label
+   | Свойство label перечисления LayerType.orthophoto возвращает строку "ORTHOPHOTO"
+   | Блочный | Позитивный
+
+17 | LayerType.segmentation.label
+   | Свойство label перечисления LayerType.segmentation возвращает строку "AI SEG"
+   | Блочный | Позитивный
+
+18 | LayerType.supportsTable — только points
+   | supportsTable возвращает true только для points; для area, orthophoto, segmentation — false
+   | Блочный | Позитивный
+
+19 | LayerType.requiresFile — только orthophoto
+   | requiresFile возвращает true только для orthophoto; для остальных типов — false
+   | Блочный | Позитивный
+
+20 | FileType.geotiff.label
+   | label FileType.geotiff возвращает строку ".tif"
+   | Блочный | Позитивный
+
+21 | FileType.other.label
+   | label FileType.other возвращает строку "FILE"
+   | Блочный | Позитивный
+
+22 | DataType.integer.label
+   | label DataType.integer возвращает строку "INTEGER"
+   | Блочный | Позитивный
+
+23 | DataType.double_.label
+   | label DataType.double_ возвращает строку "DOUBLE"
+   | Блочный | Позитивный
+
+24 | DataType.string.label
+   | label DataType.string возвращает строку "STRING"
+   | Блочный | Позитивный
+
+25 | kAllowedFileTypes — содержит разрешённые типы
+   | kAllowedFileTypes содержит FileType.geotiff и FileType.other
+   | Блочный | Позитивный
+
+26 | kAllowedFileTypes — не содержит запрещённые типы
+   | kAllowedFileTypes не содержит FileType.image, video, document, pointcloud
+   | Блочный | Негативный
+
+── GisFile / FileWithObject (file_models_test.dart) ───────────────────────────
+
+27 | GisFile.sizeLabel — байты
+   | sizeLabel возвращает "512B" для файла размером 512 байт (меньше 1 KB)
+   | Блочный | Позитивный
+
+28 | GisFile.sizeLabel — килобайты
+   | sizeLabel возвращает "1.5KB" для файла 1536 байт (1.5 KB)
+   | Блочный | Позитивный
+
+29 | GisFile.sizeLabel — мегабайты
+   | sizeLabel возвращает "10.0MB" для файла 10 MB
+   | Блочный | Позитивный
+
+30 | GisFile.sizeLabel — ровно 1 KB
+   | sizeLabel возвращает "1.0KB" для файла ровно 1024 байта
+   | Блочный | Позитивный
+
+31 | GisFile.sizeLabel — ровно 1 MB
+   | sizeLabel возвращает "1.0MB" для файла ровно 1 048 576 байт
+   | Блочный | Позитивный
+
+32 | GisFile.sizeLabel — 0 байт
+   | sizeLabel возвращает "0B" для файла нулевого размера
+   | Блочный | Позитивный
+
+33 | GisFile.sizeLabel — большой файл
+   | sizeLabel для файла ~184 MB содержит подстроку "MB"
+   | Блочный | Позитивный
+
+34 | GisFile — тип geotiff
+   | Файл с типом geotiff имеет FileType.geotiff и label ".tif"
+   | Блочный | Позитивный
+
+35 | GisFile — тип document
+   | Файл с типом document имеет FileType.document
+   | Блочный | Позитивный
+
+36 | GisFile — хранение основных полей
+   | GisFile корректно хранит поля id, name, type, sizeBytes, createdAt
+   | Блочный | Позитивный
+
+37 | GisFile — description по умолчанию
+   | Поле description по умолчанию является пустой строкой
+   | Блочный | Позитивный
+
+38 | GisFile — description задана
+   | description корректно хранится, когда задана при создании объекта
+   | Блочный | Позитивный
+
+39 | FileWithObject — хранение ссылок
+   | FileWithObject корректно хранит file.id, objectId и objectName
+   | Блочный | Позитивный
+
+40 | FileWithObject — global (пустой objectId)
+   | FileWithObject с пустым objectId представляет глобальный файл без привязки к объекту
+   | Блочный | Позитивный
+
+41 | FileWithObject — иконка и цвет
+   | FileWithObject хранит objectIcon и objectColor (оба не null)
+   | Блочный | Позитивный
+
+── GisLayer / GisObject / MapDemoPoint (gis_models_test.dart) ─────────────────
+
+42 | GisLayer.copyWith — скрытие слоя
+   | copyWith(isVisible: false) меняет видимость на false; id, name, type остаются прежними
+   | Блочный | Позитивный
+
+43 | GisLayer.copyWith — включение видимости
+   | copyWith(isVisible: true) возвращает слой с isVisible == true
+   | Блочный | Позитивный
+
+44 | GisLayer.copyWith — без аргументов
+   | copyWith без аргументов сохраняет все поля: id, tableId, objectsCount
+   | Блочный | Позитивный
+
+45 | GisLayer — points ссылается на таблицу
+   | Слой типа points содержит tableId и supportsTable == true
+   | Блочный | Позитивный
+
+46 | GisLayer — ortho ссылается на файл
+   | Слой типа orthophoto содержит fileId и requiresFile == true
+   | Блочный | Позитивный
+
+47 | GisLayer — area без ссылок
+   | Слой типа area не имеет tableId и fileId (оба null)
+   | Блочный | Позитивный
+
+48 | GisObject.layerCount — несколько слоёв
+   | layerCount возвращает корректное количество слоёв объекта (равно размеру переданного списка)
+   | Блочный | Позитивный
+
+49 | GisObject.totalObjects — суммирование
+   | totalObjects суммирует objectsCount по всем слоям (5 + 10 + 3 = 18)
+   | Блочный | Позитивный
+
+50 | GisObject.totalObjects — нет слоёв
+   | totalObjects == 0 для объекта без слоёв
+   | Блочный | Позитивный
+
+51 | GisObject.layerCount — нет слоёв
+   | layerCount == 0 для объекта без слоёв
+   | Блочный | Позитивный
+
+52 | GisObject — ссылка на категорию
+   | GisObject хранит ссылку на GisCategory с корректным id
+   | Блочный | Позитивный
+
+53 | MapDemoPoint — диапазон WGS84
+   | Координаты точки находятся в допустимом диапазоне WGS84: lat [-90..90], lng [-180..180]
+   | Блочный | Позитивный
+
+54 | MapDemoPoint — реальные координаты демо-области
+   | Точка хранит реальные координаты (~55.468 N, ~37.498 E) с точностью до 0.001
+   | Блочный | Позитивный
+
+55 | MapDemoPoint.copyWith — обновление label
+   | copyWith обновляет label; lat, lng и color остаются прежними
+   | Блочный | Позитивный
+
+56 | MapDemoPoint.copyWith — обновление attributes
+   | copyWith обновляет attributes; label не меняется
+   | Блочный | Позитивный
+
+57 | MapDemoPoint.copyWith — без аргументов
+   | copyWith без аргументов сохраняет все данные: attributes, label
+   | Блочный | Позитивный
+
+58 | MapDemoPoint — пустые attributes по умолчанию
+   | Поле attributes по умолчанию является пустой картой
+   | Блочный | Позитивный
+
+59 | MapDemoPoint — хранение attributes
+   | attributes корректно хранят значения разных типов (строки, числа в виде строк)
+   | Блочный | Позитивный
+
+60 | MapDemoPoint — южное полушарие
+   | Точка с отрицательной широтой (Кейптаун: -33.9) корректно создаётся и хранится
+   | Блочный | Позитивный
+
+61 | MapDemoPoint — западное полушарие
+   | Точка с отрицательной долготой (Нью-Йорк: -74.0) корректно создаётся и хранится
+   | Блочный | Позитивный
+
+62 | MapDemoPoint — пустой label
+   | Пустая строка допустима в качестве значения поля label
+   | Блочный | Позитивный
+
+── AttributeProperty / AttributeTable (table_models_test.dart) ────────────────
+
+63 | AttributeProperty.copyWith — обновление name
+   | copyWith обновляет поле name; id и dataType остаются прежними
+   | Блочный | Позитивный
+
+64 | AttributeProperty.copyWith — обновление dataType
+   | copyWith корректно меняет dataType на новое значение (например, на integer)
+   | Блочный | Позитивный
+
+65 | AttributeProperty.copyWith — обновление measurementUnit
+   | copyWith корректно обновляет единицу измерения
+   | Блочный | Позитивный
+
+66 | AttributeProperty.copyWith — обновление description
+   | copyWith корректно обновляет поле description
+   | Блочный | Позитивный
+
+67 | AttributeProperty.copyWith — без аргументов
+   | copyWith без аргументов сохраняет все поля: id, name, dataType, measurementUnit
+   | Блочный | Позитивный
+
+68 | AttributeProperty — dataType по умолчанию
+   | При создании AttributeProperty без dataType значение по умолчанию — DataType.string
+   | Блочный | Позитивный
+
+69 | AttributeTable.propertyCount — несколько свойств
+   | propertyCount возвращает 3 для таблицы с тремя свойствами
+   | Блочный | Позитивный
+
+70 | AttributeTable.propertyCount — пустая таблица
+   | propertyCount == 0 для таблицы без свойств
+   | Блочный | Позитивный
+
+71 | AttributeTable.propertyCount — одно свойство
+   | propertyCount == 1 для таблицы с одним свойством
+   | Блочный | Позитивный
+
+72 | AttributeTable.copyWith — обновление name
+   | copyWith обновляет имя таблицы; id остаётся прежним
+   | Блочный | Позитивный
+
+73 | AttributeTable.copyWith — обновление properties
+   | copyWith заменяет список свойств; propertyCount изменяется соответственно (становится 2)
+   | Блочный | Позитивный
+
+74 | AttributeTable.copyWith — обновление updatedAt
+   | copyWith корректно обновляет дату последнего изменения
+   | Блочный | Позитивный
+
+75 | AttributeTable.copyWith — обновление description
+   | copyWith корректно обновляет поле description
+   | Блочный | Позитивный
+
+76 | AttributeTable.copyWith — без аргументов
+   | copyWith без аргументов сохраняет id, name и propertyCount
+   | Блочный | Позитивный
+
+77 | AttributeTable.properties — доступ по индексу
+   | properties[0] и properties[1] возвращают корректные объекты с ожидаемыми id
+   | Блочный | Позитивный
+
+78 | AttributeTable.properties — разные типы данных
+   | Таблица поддерживает свойства с типами string, integer и double_ одновременно
+   | Блочный | Позитивный
+
+════════════════════════════════════════════════════════════════════════════════
+ПРОВАЙДЕРЫ (test/unit/providers/)
+════════════════════════════════════════════════════════════════════════════════
+
+── AuthNotifier (auth_notifier_test.dart) ──────────────────────────────────────
+
+79 | AuthNotifier — начальный state null
+   | При пустых SharedPreferences authProvider возвращает null
+   | Блочный | Позитивный
+
+80 | AuthNotifier — восстановление сессии
+   | Если в prefs сохранён auth (persistAuth), authProvider восстанавливает пользователя при запуске
+   | Блочный | Позитивный
+
+81 | AuthNotifier.login — успешный
+   | login('admin', '123456') устанавливает state (не null) и возвращает null (нет ошибки)
+   | Блочный | Позитивный
+
+82 | AuthNotifier.login — неверный пароль
+   | login с неверным паролем возвращает строку ошибки; state остаётся null
+   | Блочный | Негативный
+
+83 | AuthNotifier.login — сохраняет аккаунт
+   | После успешного login аккаунт с этим login присутствует в savedAccounts
+   | Блочный | Позитивный
+
+84 | AuthNotifier.register — успешная регистрация
+   | register создаёт нового пользователя, устанавливает state и возвращает null
+   | Блочный | Позитивный
+
+85 | AuthNotifier.register — логин занят
+   | register с уже занятым логином ('admin') возвращает строку, содержащую "занят"
+   | Блочный | Негативный
+
+86 | AuthNotifier.logout — сбрасывает state
+   | logout устанавливает authProvider state в null
+   | Блочный | Позитивный
+
+87 | AuthNotifier.logout — сохраняет аккаунт перед выходом
+   | После logout аккаунт по-прежнему присутствует в savedAccounts
+   | Блочный | Позитивный
+
+88 | AuthNotifier.isLoggedIn — false без сессии
+   | isLoggedIn возвращает false, когда state == null
+   | Блочный | Позитивный
+
+89 | AuthNotifier.isLoggedIn — true после логина
+   | isLoggedIn возвращает true после успешного вызова login
+   | Блочный | Позитивный
+
+90 | AuthNotifier.updateProfile — обновление данных
+   | updateProfile сохраняет новый firstName в state и возвращает null
+   | Блочный | Позитивный
+
+91 | AuthNotifier.updateProfile — конфликт логина
+   | updateProfile с логином, совпадающим с другим пользователем, возвращает строку ошибки
+   | Блочный | Негативный
+
+92 | AuthNotifier.changePassword — успех
+   | changePassword с верным текущим паролем возвращает null (нет ошибки)
+   | Блочный | Позитивный
+
+93 | AuthNotifier.changePassword — неверный текущий пароль
+   | changePassword с неверным currentPassword возвращает строку ошибки
+   | Блочный | Негативный
+
+94 | AuthNotifier.changePassword — не авторизован
+   | changePassword без активной сессии (state == null) возвращает строку ошибки
+   | Блочный | Негативный
+
+95 | AuthNotifier.quickLogin — успех
+   | quickLogin использует аккаунт из savedAccounts и устанавливает state
+   | Блочный | Позитивный
+
+96 | AuthNotifier.quickLogin — несуществующий логин
+   | quickLogin с логином, отсутствующим в savedAccounts, не изменяет state (остаётся null)
+   | Блочный | Негативный
+
+97 | AuthNotifier.savedAccounts — пустой изначально
+   | savedAccounts возвращает пустой список до первого логина
+   | Блочный | Позитивный
+
+98 | AuthNotifier.savedAccounts — содержит аккаунт после логина
+   | savedAccounts содержит 1 элемент после успешного логина
+   | Блочный | Позитивный
+
+99 | AuthNotifier.removeSavedAccount — удаление
+   | removeSavedAccount удаляет аккаунт; savedAccounts становится пустым
+   | Блочный | Позитивный
+
+── AllFilesNotifier (all_files_notifier_test.dart) ────────────────────────────
+
+100 | AllFilesNotifier — загружает все файлы
+    | После инициализации allFilesProvider содержит 2 загруженных файла
+    | Блочный | Позитивный
+
+101 | AllFilesNotifier — начинает с loading
+    | Сразу после создания контейнера state равен AsyncLoading
+    | Блочный | Позитивный
+
+102 | AllFilesNotifier.addGlobal — добавляет в начало списка
+    | addGlobal добавляет новый файл первым в список; общая длина увеличивается на 1
+    | Блочный | Позитивный
+
+103 | AllFilesNotifier.addGlobal — вызывает repo
+    | addGlobal вызывает repo.addGlobalFile ровно 1 раз
+    | Блочный | Позитивный
+
+104 | AllFilesNotifier.addGlobal — игнорирует при loading
+    | addGlobal не обновляет список, если state ещё AsyncLoading (valueOrNull == null)
+    | Блочный | Негативный
+
+105 | AllFilesNotifier.addToObject — добавляет файл к объекту
+    | addToObject добавляет файл в список первым с корректным objectId
+    | Блочный | Позитивный
+
+106 | AllFilesNotifier.delete — удаляет один файл по id
+    | delete({'id'}) удаляет файл; длина списка уменьшается на 1, файл не найден
+    | Блочный | Позитивный
+
+107 | AllFilesNotifier.delete — удаляет несколько файлов
+    | delete({'id1', 'id2'}) удаляет оба файла; список становится пустым
+    | Блочный | Позитивный
+
+108 | AllFilesNotifier.delete — вызывает repo
+    | delete вызывает repo.deleteFiles ровно 1 раз
+    | Блочный | Позитивный
+
+109 | globalFilesProvider — только глобальные файлы
+    | globalFilesProvider возвращает только файлы с objectId == '' (без привязки к объекту)
+    | Блочный | Позитивный
+
+── FilterProviders (filter_providers_test.dart) ────────────────────────────────
+
+110 | filteredObjectsProvider — без фильтров
+    | При отсутствии фильтров возвращаются все 3 объекта
+    | Блочный | Позитивный
+
+111 | filteredObjectsProvider — поиск по имени (case-insensitive)
+    | Поиск "пшен" возвращает 2 объекта с "пшеница" в названии независимо от регистра
+    | Блочный | Позитивный
+
+112 | filteredObjectsProvider — поиск по описанию
+    | Поиск "вода" находит объект с "вода" в поле description
+    | Блочный | Позитивный
+
+113 | filteredObjectsProvider — пустой поисковый запрос
+    | Пустая строка поиска возвращает все 3 объекта без фильтрации
+    | Блочный | Позитивный
+
+114 | filteredObjectsProvider — нет совпадений
+    | Поиск "xyz_no_match" возвращает пустой список
+    | Блочный | Негативный
+
+115 | filteredObjectsProvider — trim пробелов в запросе
+    | Поиск " пшен " (с пробелами) работает так же, как "пшен"; возвращает 2 объекта
+    | Блочный | Позитивный
+
+116 | filteredObjectsProvider — фильтр по категории cat_1
+    | Выбор категории cat_1 возвращает только 2 объекта этой категории
+    | Блочный | Позитивный
+
+117 | filteredObjectsProvider — фильтр по категории cat_2
+    | Выбор категории cat_2 возвращает ровно 1 объект
+    | Блочный | Позитивный
+
+118 | filteredObjectsProvider — null категория (без фильтра)
+    | null в selectedCategoryProvider возвращает все объекты без фильтра по категории
+    | Блочный | Позитивный
+
+119 | filteredObjectsProvider — категория + текстовый поиск
+    | Одновременное применение фильтра cat_1 и поиска "Поле Пшеница" возвращает ровно 1 объект
+    | Блочный | Позитивный
+
+120 | filteredTablesProvider — без фильтра
+    | При пустом поисковом запросе возвращаются все 3 таблицы
+    | Блочный | Позитивный
+
+121 | filteredTablesProvider — поиск по имени таблицы
+    | Поиск "климат" возвращает 1 таблицу ("Климатические данные")
+    | Блочный | Позитивный
+
+122 | filteredTablesProvider — поиск по описанию таблицы
+    | Поиск "агро" находит таблицу "Почвенные параметры" (description: "агро")
+    | Блочный | Позитивный
+
+123 | filteredTablesProvider — пустой запрос
+    | Пустой поисковый запрос возвращает все таблицы без фильтрации
+    | Блочный | Позитивный
+
+124 | filteredFilesProvider — без фильтра
+    | При пустом запросе возвращаются все 2 файла
+    | Блочный | Позитивный
+
+125 | filteredFilesProvider — поиск по имени файла
+    | Поиск "ortho" возвращает 1 файл с "ortho" в имени
+    | Блочный | Позитивный
+
+126 | filteredFilesProvider — поиск по имени объекта
+    | Поиск "водо" возвращает файл, привязанный к объекту "Водохранилище"
+    | Блочный | Позитивный
+
+── LayersNotifier (layers_notifier_test.dart) ──────────────────────────────────
+
+127 | LayersNotifier — начинает с AsyncLoading
+    | Сразу после создания контейнера layersProvider находится в состоянии AsyncLoading
+    | Блочный | Позитивный
+
+128 | LayersNotifier — загружает слои после инициализации
+    | После завершения загрузки layersProvider содержит 3 слоя (AsyncData)
+    | Блочный | Позитивный
+
+129 | LayersNotifier — независимые нотификаторы для разных objectId
+    | Нотификаторы для 'obj_1' и 'obj_2' хранят разные наборы слоёв независимо
+    | Блочный | Позитивный
+
+130 | LayersNotifier — ошибка загрузки
+    | При исключении в repo.fetchLayers state переходит в AsyncError
+    | Блочный | Негативный
+
+131 | LayersNotifier.toggleVisibility — переключает видимость
+    | toggleVisibility('l1') меняет isVisible слоя с true на false
+    | Блочный | Позитивный
+
+132 | LayersNotifier.toggleVisibility — вызывает repo
+    | toggleVisibility вызывает repo.updateLayerVisibility ровно 1 раз с правильными аргументами
+    | Блочный | Позитивный
+
+133 | LayersNotifier.toggleVisibility — не меняет другие слои
+    | Переключение видимости 'l1' не изменяет isVisible слоя 'l2'
+    | Блочный | Позитивный
+
+134 | LayersNotifier.toggleVisibility — state loading
+    | toggleVisibility при AsyncLoading state не вызывает repo.updateLayerVisibility
+    | Блочный | Негативный
+
+135 | LayersNotifier.deleteLayer — удаляет слой из state
+    | deleteLayer убирает слой из списка; длина уменьшается на 1; слой не найден
+    | Блочный | Позитивный
+
+136 | LayersNotifier.deleteLayer — вызывает repo
+    | deleteLayer вызывает repo.deleteLayer с правильными objectId и layerId
+    | Блочный | Позитивный
+
+137 | LayersNotifier.deleteLayer — не затрагивает другие слои
+    | Удаление 'l1' не изменяет слои 'l2' и 'l3'
+    | Блочный | Позитивный
+
+138 | LayersNotifier.addLayer — добавляет в конец списка
+    | addLayer добавляет новый слой последним; длина увеличивается на 1
+    | Блочный | Позитивный
+
+139 | LayersNotifier.addLayer — вызывает repo
+    | addLayer вызывает repo.addLayer с правильным objectId
+    | Блочный | Позитивный
+
+── SyncStatus (sync_status_test.dart) ──────────────────────────────────────────
+
+140 | SyncStatus — начальный статус localOnly
+    | До логина userSyncStatusProvider равен SyncStatus.localOnly
+    | Блочный | Позитивный
+
+141 | SyncStatus — успешная синхронизация после логина
+    | После логина, когда сервер вернул пользователя, статус переходит в SyncStatus.synced
+    | Блочный | Позитивный
+
+142 | SyncStatus — сервер вернул 404 (null) после логина
+    | При ответе сервера 404 статус остаётся SyncStatus.localOnly
+    | Блочный | Негативный
+
+143 | SyncStatus — таймаут сервера после логина
+    | При таймауте соединения статус остаётся SyncStatus.localOnly
+    | Блочный | Негативный
+
+144 | SyncStatus — конфликт 409 после логина
+    | При ответе сервера 409 статус переходит в SyncStatus.conflict
+    | Блочный | Негативный
+
+145 | SyncStatus — успешная синхронизация после регистрации
+    | После регистрации с успешным ответом сервера статус — SyncStatus.synced
+    | Блочный | Позитивный
+
+146 | SyncStatus — сервер недоступен при регистрации
+    | При недоступном сервере регистрация локально успешна (err == null), статус — localOnly
+    | Блочный | Негативный
+
+147 | SyncStatus — успешная синхронизация после updateProfile
+    | После updateProfile с успешным ответом сервера статус — SyncStatus.synced
+    | Блочный | Позитивный
+
+148 | SyncStatus — конфликт 409 после updateProfile
+    | При ответе сервера 409 на обновление профиля статус — SyncStatus.conflict
+    | Блочный | Негативный
+
+149 | SyncStatus — успешная синхронизация после changePassword
+    | После смены пароля с успешным ответом сервера статус — SyncStatus.synced
+    | Блочный | Позитивный
+
+150 | SyncStatus — сервер недоступен при смене пароля
+    | При недоступном сервере смена пароля локально успешна; статус — SyncStatus.localOnly
+    | Блочный | Негативный
+
+151 | SyncStatus — logout сбрасывает статус
+    | logout возвращает статус в SyncStatus.localOnly даже если до этого был synced
+    | Блочный | Позитивный
+
+152 | SyncStatus — мёрдж данных с сервера
+    | Данные с сервера (firstName, lastName) перезаписывают локальные в state после синхронизации
+    | Блочный | Позитивный
+
+153 | SyncStatus — passwordHash сохраняется локально
+    | passwordHash при мёрдже берётся из локального state, а не с сервера
+    | Блочный | Позитивный
+
+── TablesNotifier (tables_notifier_test.dart) ──────────────────────────────────
+
+154 | TablesNotifier — загружает таблицы
+    | После инициализации tablesProvider содержит 3 таблицы
+    | Блочный | Позитивный
+
+155 | TablesNotifier — начальное состояние AsyncLoading
+    | Сразу после создания контейнера tablesProvider находится в состоянии AsyncLoading
+    | Блочный | Позитивный
+
+156 | TablesNotifier — ошибка загрузки
+    | При исключении в repo.fetchTables state переходит в AsyncError
+    | Блочный | Негативный
+
+157 | TablesNotifier.create — добавляет в начало списка
+    | create добавляет новую таблицу первой; длина списка увеличивается на 1
+    | Блочный | Позитивный
+
+158 | TablesNotifier.create — вызывает repo
+    | create вызывает repo.createTable ровно 1 раз
+    | Блочный | Позитивный
+
+159 | TablesNotifier.update — обновляет таблицу
+    | update заменяет таблицу с совпадающим id; поле name обновляется
+    | Блочный | Позитивный
+
+160 | TablesNotifier.update — не меняет другие таблицы
+    | update одной таблицы не изменяет name других таблиц в списке
+    | Блочный | Позитивный
+
+161 | TablesNotifier.delete — удаляет таблицу из списка
+    | delete('id') удаляет таблицу; длина уменьшается на 1; таблица не найдена
+    | Блочный | Позитивный
+
+162 | TablesNotifier.delete — оптимистичное обновление
+    | Таблица исчезает из state немедленно, до завершения repo.deleteTable
+    | Блочный | Позитивный
+
+163 | TablesNotifier.delete — откат при ошибке repo
+    | Если repo.deleteTable выбрасывает исключение, таблица возвращается в state
+    | Блочный | Негативный
+
+164 | TablesNotifier.reload — перезагружает данные
+    | reload запрашивает данные из repo повторно; новый набор таблиц применяется к state
+    | Блочный | Позитивный
+
+════════════════════════════════════════════════════════════════════════════════
+РЕПОЗИТОРИЙ (test/unit/repositories/)
+════════════════════════════════════════════════════════════════════════════════
+
+── Auth Repository (auth_repository_test.dart) ─────────────────────────────────
+
+165 | repo.login — верные данные
+    | login('admin', '123456') возвращает AppUser с login == 'admin'
+    | Блочный | Позитивный
+
+166 | repo.login — неверный пароль
+    | login с неверным паролем возвращает null
+    | Блочный | Негативный
+
+167 | repo.login — несуществующий логин
+    | login с несуществующим пользователем возвращает null
+    | Блочный | Негативный
+
+168 | repo.login — пустые данные
+    | login('', '') возвращает null
+    | Блочный | Негативный
+
+169 | repo.login — чувствительность к регистру
+    | login('Admin', '123456') возвращает null — логин 'admin' != 'Admin'
+    | Блочный | Негативный
+
+170 | repo.register — создаёт пользователя
+    | register возвращает AppUser с корректными login, firstName, email и непустым id
+    | Блочный | Позитивный
+
+171 | repo.register — зарегистрированный может войти
+    | Пользователь, зарегистрированный через register, успешно входит через login
+    | Блочный | Позитивный
+
+172 | repo.register — сохраняется в SharedPreferences
+    | Зарегистрированный пользователь доступен после пересоздания AppRepository с теми же prefs
+    | Блочный | Позитивный
+
+173 | repo.register — генерирует уникальный id
+    | Два последовательно зарегистрированных пользователя получают разные id
+    | Блочный | Позитивный
+
+174 | repo.isLoginTaken — занято
+    | isLoginTaken('admin') возвращает true для существующего пользователя
+    | Блочный | Позитивный
+
+175 | repo.isLoginTaken — свободно
+    | isLoginTaken для несуществующего логина возвращает false
+    | Блочный | Позитивный
+
+176 | repo.isLoginTaken — excludeId своего пользователя
+    | isLoginTaken('admin', excludeId: adminId) возвращает false — пользователь не блокирует себя
+    | Блочный | Позитивный
+
+177 | repo.isLoginTaken — excludeId чужого пользователя
+    | isLoginTaken('other', excludeId: adminId) возвращает true — другой пользователь блокирует логин
+    | Блочный | Негативный
+
+178 | repo.updateProfile — обновляет данные
+    | updateProfile сохраняет новый firstName в репозитории
+    | Блочный | Позитивный
+
+179 | repo.updateProfile — сохраняется в prefs
+    | Обновление профиля персистентно: новое firstName видно после пересоздания репозитория
+    | Блочный | Позитивный
+
+180 | repo.changePassword — успех
+    | changePassword с верным currentPassword возвращает null (нет ошибки)
+    | Блочный | Позитивный
+
+181 | repo.changePassword — можно войти с новым паролем
+    | После смены пароля login с новым паролем успешен
+    | Блочный | Позитивный
+
+182 | repo.changePassword — старый пароль не работает
+    | После смены пароля login со старым паролем возвращает null
+    | Блочный | Негативный
+
+183 | repo.changePassword — неверный текущий пароль
+    | changePassword с неверным currentPassword возвращает строку ошибки, содержащую "пароль"
+    | Блочный | Негативный
+
+184 | repo.changePassword — несуществующий пользователь
+    | changePassword для несуществующего логина возвращает строку ошибки
+    | Блочный | Негативный
+
+185 | repo.getSavedAccounts — пустой изначально
+    | getSavedAccounts возвращает пустой список до первого saveAccount
+    | Блочный | Позитивный
+
+186 | repo.saveAccount — добавляет аккаунт
+    | saveAccount добавляет аккаунт; getSavedAccounts возвращает 1 запись с правильным login
+    | Блочный | Позитивный
+
+187 | repo.saveAccount — не дублирует
+    | Повторный saveAccount одного аккаунта не создаёт дубликат; список остаётся размером 1
+    | Блочный | Позитивный
+
+188 | repo.removeSavedAccount — удаляет аккаунт
+    | removeSavedAccount удаляет аккаунт; список становится пустым
+    | Блочный | Позитивный
+
+189 | repo.saveAccount — сохраняется в prefs
+    | Сохранённый аккаунт доступен после пересоздания AppRepository с теми же prefs
+    | Блочный | Позитивный
+
+190 | repo.removeSavedAccount — несуществующий логин не падает
+    | removeSavedAccount('ghost') для несуществующего логина не выбрасывает исключение
+    | Блочный | Негативный
+
+191 | repo.restoredLogin — null изначально
+    | restoredLogin возвращает null до явного вызова persistAuth
+    | Блочный | Позитивный
+
+192 | repo.persistAuth — сохраняет логин
+    | persistAuth('admin') сохраняет логин; restoredLogin возвращает 'admin'
+    | Блочный | Позитивный
+
+193 | repo.clearAuth — удаляет сохранённый логин
+    | clearAuth очищает логин; restoredLogin снова возвращает null
+    | Блочный | Позитивный
+
+194 | repo.restoredLogin — восстанавливается при пересоздании
+    | restoredLogin восстанавливается при создании нового AppRepository с теми же prefs
+    | Блочный | Позитивный
+
+195 | repo.getUserByLogin — существующий пользователь
+    | getUserByLogin('admin') возвращает AppUser с login == 'admin'
+    | Блочный | Позитивный
+
+196 | repo.getUserByLogin — несуществующий пользователь
+    | getUserByLogin для несуществующего логина возвращает null
+    | Блочный | Негативный
+
+197 | repo.updateSavedAccount — обновляет запись
+    | updateSavedAccount обновляет displayName в saved accounts
+    | Блочный | Позитивный
+
+198 | repo.updateSavedAccount — несуществующий логин не падает
+    | updateSavedAccount для несуществующего старого логина не выбрасывает исключение
+    | Блочный | Негативный
+
+── Files Repository (files_repository_test.dart) ──────────────────────────────
+
+199 | repo.fetchFiles — возвращает файлы объекта
+    | fetchFiles('obj_1') возвращает непустой список файлов
+    | Блочный | Позитивный
+
+200 | repo.fetchFiles — кэширует результат
+    | Повторный fetchFiles возвращает то же количество файлов (данные из кэша)
+    | Блочный | Позитивный
+
+201 | repo.fetchFiles — независимые наборы для разных объектов
+    | Файлы obj_1 и obj_2 не пересекаются (первые файлы имеют разные id)
+    | Блочный | Позитивный
+
+202 | repo.getGlobalFiles — возвращает seed-файлы
+    | getGlobalFiles возвращает непустой список файлов глобального хранилища
+    | Блочный | Позитивный
+
+203 | repo.getGlobalFiles — список неизменяемый
+    | Прямое изменение списка из getGlobalFiles выбрасывает исключение
+    | Блочный | Негативный
+
+204 | repo.addGlobalFile — добавляет в хранилище
+    | addGlobalFile увеличивает длину getGlobalFiles на 1
+    | Блочный | Позитивный
+
+205 | repo.addGlobalFile — возвращает FileWithObject
+    | addGlobalFile возвращает FileWithObject с пустым objectId и корректным file.id
+    | Блочный | Позитивный
+
+206 | repo.addFileToObject — добавляет файл к объекту
+    | addFileToObject увеличивает длину fetchFiles объекта на 1
+    | Блочный | Позитивный
+
+207 | repo.addFileToObject — не дублирует существующий файл
+    | Попытка добавить уже существующий файл объекта не создаёт дубликат
+    | Блочный | Негативный
+
+208 | repo.addFileToObject — корректный objectId
+    | Возвращённый FileWithObject имеет objectId == 'obj_1'
+    | Блочный | Позитивный
+
+209 | repo.attachFileToObject — прикрепляет глобальный файл
+    | attachFileToObject делает глобальный файл видимым в списке файлов объекта
+    | Блочный | Позитивный
+
+210 | repo.attachFileToObject — не дублирует прикреплённый файл
+    | Повторное attachFileToObject одного файла не создаёт дубликат
+    | Блочный | Негативный
+
+211 | repo.fetchAllFiles — содержит глобальные и объектные файлы
+    | fetchAllFiles содержит файлы с objectId == '' и с objectId != ''
+    | Блочный | Позитивный
+
+212 | repo.fetchAllFiles — глобальные файлы идут первыми
+    | Первый элемент fetchAllFiles имеет пустой objectId (глобальный файл)
+    | Блочный | Позитивный
+
+213 | repo.deleteFiles — удаляет из глобального хранилища
+    | deleteFiles удаляет указанный файл из getGlobalFiles
+    | Блочный | Позитивный
+
+214 | repo.deleteFiles — удаляет из файлов объекта
+    | deleteFiles удаляет указанный файл из fetchFiles объекта
+    | Блочный | Позитивный
+
+215 | repo.deleteFiles — удаляет несколько файлов за раз
+    | deleteFiles с несколькими id удаляет все указанные файлы
+    | Блочный | Позитивный
+
+216 | repo.deleteFiles — пустой набор id
+    | deleteFiles({}) не изменяет список файлов
+    | Блочный | Позитивный
+
+217 | repo.deleteFiles — несуществующий id не падает
+    | deleteFiles({'ghost_id'}) не выбрасывает исключение
+    | Блочный | Негативный
+
+── GIS Repository (gis_repository_test.dart) ──────────────────────────────────
+
+218 | repo.addObject — добавляет в начало списка
+    | addObject добавляет объект первым в fetchObjects
+    | Блочный | Позитивный
+
+219 | repo.addObject — fetchObjects видит добавленный объект
+    | fetchObjects после addObject содержит объект с ожидаемым id
+    | Блочный | Позитивный
+
+220 | repo.addObject — увеличивает количество объектов
+    | После addObject количество объектов в fetchObjects увеличивается на 1
+    | Блочный | Позитивный
+
+221 | repo.fetchLayers — возвращает слои объекта
+    | fetchLayers('obj_1') возвращает непустой список слоёв
+    | Блочный | Позитивный
+
+222 | repo.fetchLayers — кэш при повторном вызове
+    | Повторный fetchLayers возвращает то же количество слоёв (данные из кэша)
+    | Блочный | Позитивный
+
+223 | repo.fetchLayers — несуществующий objectId
+    | fetchLayers для несуществующего objectId возвращает пустой список
+    | Блочный | Негативный
+
+224 | repo.fetchLayers — независимые слои разных объектов
+    | ID слоёв obj_1 начинаются с "obj_1_", ID слоёв obj_2 — с "obj_2_"
+    | Блочный | Позитивный
+
+225 | repo.updateLayerVisibility — меняет видимость слоя
+    | updateLayerVisibility переключает isVisible на противоположное значение
+    | Блочный | Позитивный
+
+226 | repo.updateLayerVisibility — несуществующий objectId не падает
+    | updateLayerVisibility для несуществующего objectId завершается без исключения
+    | Блочный | Негативный
+
+227 | repo.updateLayerVisibility — несуществующий layerId не меняет слои
+    | updateLayerVisibility для несуществующего layerId не изменяет список слоёв
+    | Блочный | Негативный
+
+228 | repo.deleteLayer — удаляет слой по id
+    | deleteLayer уменьшает количество слоёв на 1; удалённый слой не найден в списке
+    | Блочный | Позитивный
+
+229 | repo.deleteLayer — несуществующий layerId не падает
+    | deleteLayer для несуществующего layerId завершается без исключения
+    | Блочный | Негативный
+
+230 | repo.addLayer — добавляет слой к объекту
+    | addLayer увеличивает количество слоёв на 1; новый слой доступен в fetchLayers
+    | Блочный | Позитивный
+
+231 | repo.addLayer — без предварительного fetchLayers
+    | addLayer корректно добавляет слой, даже если fetchLayers не вызывался до этого
+    | Блочный | Позитивный
+
+232 | repo.updateObject — обновляет name
+    | updateObject сохраняет новое name объекта; изменение видно в fetchObjects
+    | Блочный | Позитивный
+
+233 | repo.updateObject — обновляет description
+    | updateObject сохраняет новое description; изменение видно в fetchObjects
+    | Блочный | Позитивный
+
+234 | repo.updateObject — не затрагивает другие объекты
+    | Обновление obj_1 не изменяет name obj_2
+    | Блочный | Позитивный
+
+235 | repo.updateObject — несуществующий id не падает
+    | updateObject для несуществующего id завершается без исключения
+    | Блочный | Негативный
+
+236 | repo.updateObject — количество объектов не меняется
+    | После updateObject количество объектов в fetchObjects остаётся прежним
+    | Блочный | Позитивный
+
+237 | repo.deleteObject — удаляет объект по id
+    | deleteObject удаляет 'obj_1'; он не найден в fetchObjects
+    | Блочный | Позитивный
+
+238 | repo.deleteObject — уменьшает количество объектов на 1
+    | После deleteObject fetchObjects возвращает на 1 объект меньше
+    | Блочный | Позитивный
+
+239 | repo.deleteObject — несуществующий id не падает
+    | deleteObject для несуществующего id завершается без исключения
+    | Блочный | Негативный
+
+240 | repo.deleteObject — не удаляет другие объекты
+    | Удаление 'obj_1' не затрагивает 'obj_2' и 'obj_3'
+    | Блочный | Позитивный
+
+241 | repo.deleteObject — последовательное удаление всех объектов
+    | Удаление всех объектов по одному оставляет пустой список
+    | Блочный | Позитивный
+
+── Repository Edge Cases (repository_edge_cases_test.dart) ────────────────────
+
+242 | isLoginTaken — excludeId своего id
+    | isLoginTaken('admin', excludeId: 'u1') возвращает false — seed admin с id u1 не блокирует себя
+    | Блочный | Позитивный
+
+243 | isLoginTaken — excludeId чужого id
+    | isLoginTaken('user2', excludeId: 'u1') возвращает true — другой пользователь блокирует логин
+    | Блочный | Негативный
+
+244 | isLoginTaken — несуществующий логин с excludeId
+    | isLoginTaken('ghost_login', excludeId: 'u1') возвращает false
+    | Блочный | Позитивный
+
+245 | isLoginTaken — без excludeId собственный логин занят
+    | isLoginTaken('admin') без excludeId возвращает true (свой логин считается занятым)
+    | Блочный | Негативный
+
+246 | updateSavedAccount — обновляет login в записи
+    | updateSavedAccount меняет login аккаунта в saved accounts на новый
+    | Блочный | Позитивный
+
+247 | updateSavedAccount — несуществующий старый логин не падает
+    | updateSavedAccount('ghost', ...) не выбрасывает исключение
+    | Блочный | Негативный
+
+248 | updateSavedAccount — displayName и initials обновляются
+    | displayName и initials saved account обновляются корректно при изменении firstName/lastName
+    | Блочный | Позитивный
+
+249 | attachFileToObject — дедупликация одного файла
+    | Прикрепление одного файла дважды не создаёт дубликат
+    | Блочный | Негативный
+
+250 | attachFileToObject — два разных файла
+    | Прикрепление двух разных файлов — оба присутствуют в списке
+    | Блочный | Позитивный
+
+251 | deleteFiles — пустое множество id не падает
+    | deleteFiles({}) завершается без исключений
+    | Блочный | Негативный
+
+252 | deleteFiles — несуществующие id не падают
+    | deleteFiles({'ghost_id_1', 'ghost_id_2'}) не выбрасывает исключение
+    | Блочный | Негативный
+
+253 | deleteFiles — удаляет файл из globalFiles
+    | После deleteFiles файл, добавленный через addGlobalFile, не найден в getGlobalFiles
+    | Блочный | Позитивный
+
+254 | deleteFiles — удаляет файл из filesCache объекта
+    | После deleteFiles файл, добавленный через addFileToObject, не найден в fetchFiles объекта
+    | Блочный | Позитивный
+
+255 | deleteFiles — удаляет из нескольких объектов одновременно
+    | deleteFiles с id из разных объектов удаляет файлы из каждого объекта
+    | Блочный | Позитивный
+
+256 | getGlobalFiles — возвращает seed-файлы
+    | getGlobalFiles возвращает непустой список файлов
+    | Блочный | Позитивный
+
+257 | getGlobalFiles — список неизменяемый
+    | Прямое изменение списка из getGlobalFiles выбрасывает исключение
+    | Блочный | Негативный
+
+258 | getGlobalFiles — добавленный файл появляется в списке
+    | Файл, добавленный через addGlobalFile, присутствует в getGlobalFiles
+    | Блочный | Позитивный
+
+259 | SyncStatus persistence — localOnly по умолчанию
+    | getSyncStatus() возвращает SyncStatus.localOnly при первом запуске репозитория
+    | Блочный | Позитивный
+
+260 | SyncStatus persistence — сохраняется и восстанавливается
+    | persistSyncStatus(synced) → getSyncStatus() возвращает synced
+    | Блочный | Позитивный
+
+261 | SyncStatus persistence — все статусы сохраняются корректно
+    | Каждое значение SyncStatus корректно сохраняется через persistSyncStatus и читается через getSyncStatus
+    | Блочный | Позитивный
+
+262 | SyncStatus persistence — восстанавливается при пересоздании репозитория
+    | Статус восстанавливается при создании нового AppRepository с теми же prefs
+    | Блочный | Позитивный
+
+263 | fetchLayers (edge) — несуществующий objectId
+    | fetchLayers('obj_9999_nonexistent') возвращает пустой список
+    | Блочный | Негативный
+
+264 | fetchLayers (edge) — независимость кэшей разных объектов
+    | Слой, добавленный в 'obj_1', не появляется в кэше 'obj_2'
+    | Блочный | Позитивный
+
+265 | register (edge) — все поля пользователя сохраняются
+    | Все поля (login, firstName, lastName, organization, email, passwordHash) сохраняются корректно
+    | Блочный | Позитивный
+
+266 | register (edge) — уникальный id для каждого пользователя
+    | Два разных пользователя, зарегистрированных последовательно, получают разные id
+    | Блочный | Позитивный
+
+267 | register (edge) — phone по умолчанию пустая строка
+    | Поле phone зарегистрированного пользователя по умолчанию — пустая строка
+    | Блочный | Позитивный
+
+268 | saveAccount — порядок: последний первый
+    | Последний сохранённый аккаунт стоит первым в списке getSavedAccounts
+    | Блочный | Позитивный
+
+269 | saveAccount — повторный вызов переносит аккаунт в начало
+    | Повторный saveAccount уже существующего аккаунта перемещает его в начало списка без дублирования
+    | Блочный | Позитивный
+
+── Tables Repository (tables_repository_test.dart) ────────────────────────────
+
+270 | repo.createTable — добавляет таблицу в список
+    | createTable увеличивает длину fetchTables на 1
+    | Блочный | Позитивный
+
+271 | repo.createTable — новая таблица первая в списке
+    | Новая таблица добавляется первой в fetchTables
+    | Блочный | Позитивный
+
+272 | repo.createTable — возвращает созданную таблицу
+    | createTable возвращает таблицу с ожидаемыми id и name
+    | Блочный | Позитивный
+
+273 | repo.createTable — таблица с пустыми свойствами
+    | createTable создаёт таблицу; propertyCount == 0
+    | Блочный | Позитивный
+
+274 | repo.createTable — таблица с несколькими свойствами
+    | createTable создаёт таблицу с 3 свойствами; propertyCount == 3
+    | Блочный | Позитивный
+
+275 | repo.updateTable — обновляет name
+    | updateTable обновляет name существующей таблицы; изменение видно в fetchTables
+    | Блочный | Позитивный
+
+276 | repo.updateTable — обновляет updatedAt
+    | updateTable обновляет или сохраняет метку времени updatedAt
+    | Блочный | Позитивный
+
+277 | repo.updateTable — обновляет properties
+    | updateTable заменяет список свойств; новый propertyCount == 2
+    | Блочный | Позитивный
+
+278 | repo.updateTable — возвращает обновлённую таблицу
+    | updateTable возвращает таблицу с обновлённым description
+    | Блочный | Позитивный
+
+279 | repo.deleteTable — удаляет таблицу по id
+    | deleteTable уменьшает длину fetchTables на 1; удалённая таблица не найдена
+    | Блочный | Позитивный
+
+280 | repo.deleteTable — несуществующий id не изменяет список
+    | deleteTable('nonexistent_id') не изменяет количество таблиц в fetchTables
+    | Блочный | Негативный
+
+281 | repo.deleteTable — не удаляет другие таблицы
+    | Удаление второй таблицы не затрагивает первую и третью
+    | Блочный | Позитивный
+
+════════════════════════════════════════════════════════════════════════════════
+СЕРВИСЫ (test/unit/services/)
+════════════════════════════════════════════════════════════════════════════════
+
+── UserApiService (user_api_service_test.dart) ─────────────────────────────────
+
+282 | getUser — ответ 200
+    | GET /user с ответом 200 возвращает UserDto с правильными полями (id, login, firstName, email)
+    | Блочный | Позитивный
+
+283 | getUser — id передаётся как query-параметр
+    | getUser(id: 'u42') отправляет запрос с queryParameters: {'id': 'u42'}
+    | Блочный | Позитивный
+
+284 | getUser — вызов без id
+    | getUser() без аргумента id передаёт null в queryParameters
+    | Блочный | Позитивный
+
+285 | getUser — ответ 404 возвращает null
+    | При DioException с кодом 404 getUser возвращает null (пользователь не найден)
+    | Блочный | Негативный
+
+286 | getUser — таймаут выбрасывает ApiException
+    | При connectionTimeout DioException выбрасывается ApiException с "ожидания" в сообщении
+    | Блочный | Негативный
+
+287 | getUser — нет соединения выбрасывает ApiException
+    | При connectionError DioException выбрасывается ApiException с "соединения" в сообщении
+    | Блочный | Негативный
+
+288 | getUser — пустое тело ответа возвращает null
+    | 204 No Content (data == null) возвращает null
+    | Блочный | Негативный
+
+289 | createUser — ответ 201
+    | POST /user с успешным ответом возвращает UserDto из тела ответа
+    | Блочный | Позитивный
+
+290 | createUser — password включён в тело запроса
+    | Тело POST-запроса содержит поля login и password
+    | Блочный | Позитивный
+
+291 | createUser — ответ 409 выбрасывает ApiException
+    | POST /user с ответом 409 выбрасывает ApiException со statusCode == 409
+    | Блочный | Негативный
+
+292 | createUser — пустое тело ответа возвращает null
+    | 204 No Content на POST /user возвращает null
+    | Блочный | Негативный
+
+293 | updateUser — ответ 200
+    | PUT /user с ответом 200 возвращает UserDto с обновлённым firstName
+    | Блочный | Позитивный
+
+294 | updateUser — ответ 204 возвращает исходный dto
+    | 204 No Content на PUT /user возвращает переданный dto (локальные данные без перезаписи)
+    | Блочный | Позитивный
+
+295 | updateUser — ответ 409 выбрасывает ApiException
+    | PUT /user с ответом 409 выбрасывает ApiException со statusCode == 409
+    | Блочный | Негативный
+
+296 | updatePassword — успех без исключений
+    | PATCH /user с успешным ответом завершается нормально (completes)
+    | Блочный | Позитивный
+
+297 | updatePassword — тело запроса корректное
+    | Тело PATCH-запроса содержит поля login, currentPassword, newPassword
+    | Блочный | Позитивный
+
+298 | updatePassword — ошибка сервера выбрасывает ApiException
+    | PATCH /user с ответом 403 выбрасывает ApiException
+    | Блочный | Негативный
+
+299 | ApiException — сообщение берётся из тела ответа
+    | При ответе 500 с {message: '...'} ApiException.message совпадает с телом ответа
+    | Блочный | Негативный
+
+300 | ApiException — fallback сообщение при пустом теле
+    | При ответе 503 с пустым телом ApiException.message содержит "503"
+    | Блочный | Негативный
+
+301 | UserDto.fromJson — парсинг всех полей
+    | fromJson корректно парсит все поля JSON, включая phone
+    | Блочный | Позитивный
+
+302 | UserDto.fromJson — отсутствующие поля становятся пустыми строками
+    | fromJson({}) возвращает UserDto с пустыми строками во всех полях
+    | Блочный | Негативный
+
+303 | UserDto.toAppUser — сохраняет passwordHash
+    | toAppUser(passwordHash: 'local_hash') сохраняет переданный passwordHash
+    | Блочный | Позитивный
+
+304 | UserDto.toAppUser — без passwordHash
+    | toAppUser без аргумента устанавливает passwordHash == ''
+    | Блочный | Позитивный
+
+305 | UserDto.fromAppUser — не включает пароль
+    | JSON, полученный из fromAppUser, не содержит ключей 'password' или 'passwordHash'
+    | Блочный | Позитивный
+
+════════════════════════════════════════════════════════════════════════════════
+ВИДЖЕТНЫЕ ТЕСТЫ (test/integration/ и test/widget/)
+════════════════════════════════════════════════════════════════════════════════
+
+── Auth Flow — Widget Tests (test/integration/auth_flow_test.dart) ─────────────
+
+306 | LoginScreen — экран для неавторизованного пользователя
+    | Неавторизованный пользователь видит текст "GIS Monitor" и "Войдите в систему"
+    | Виджетный | Позитивный
+
+307 | LoginScreen — поля логин и пароль
+    | На экране присутствуют 2 TextFormField с подписями "Логин" и "Пароль"
+    | Виджетный | Позитивный
+
+308 | LoginScreen — кнопка Войти
+    | Кнопка с текстом "Войти" присутствует на экране
+    | Виджетный | Позитивный
+
+309 | LoginScreen — кнопка Зарегистрироваться
+    | Кнопка с текстом "Зарегистрироваться" присутствует на экране
+    | Виджетный | Позитивный
+
+310 | LoginScreen — валидация пустого логина
+    | Нажатие "Войти" с пустыми полями показывает текст "Введите логин"
+    | Виджетный | Негативный
+
+311 | LoginScreen — валидация короткого пароля
+    | Пароль из 2 символов после нажатия "Войти" показывает "Минимум 4 символа"
+    | Виджетный | Негативный
+
+312 | LoginScreen — успешный логин → переход на dashboard
+    | Ввод admin/123456 и нажатие "Войти" убирает экран логина ("Войдите в систему" исчезает)
+    | Виджетный | Позитивный
+
+313 | LoginScreen — неверный пароль → Snackbar с ошибкой
+    | Неверный пароль показывает Snackbar с текстом "Неверный логин или пароль"
+    | Виджетный | Негативный
+
+314 | Register Flow — переход на Step1
+    | Нажатие "Зарегистрироваться" открывает экран с заголовком "Регистрация" и "Придумайте пароль"
+    | Виджетный | Позитивный
+
+315 | Register Flow — Step1 содержит поля пароля
+    | Step1 содержит TextFormField и подсказку "Минимум 6 символов"
+    | Виджетный | Позитивный
+
+316 | Saved Accounts — не показываются при пустом списке
+    | При пустых prefs раздел "Сохранённые аккаунты" не отображается
+    | Виджетный | Позитивный
+
+317 | Theme Toggle — кнопка присутствует
+    | На экране логина присутствуют IconButton-виджеты (включая переключатель темы)
+    | Виджетный | Позитивный
+
+318 | Auth Persistence — авторизованный пользователь → сразу на dashboard
+    | При наличии данных авторизации в prefs экран логина ("Войдите в систему") не показывается
+    | Виджетный | Позитивный
+
+── Tables Flow — Widget Tests (test/integration/tables_flow_test.dart) ─────────
+
+319 | TablesScreen — показывает список таблиц
+    | TablesScreen отображает "Климатические данные" и "Почвенные параметры"
+    | Виджетный | Позитивный
+
+320 | TablesScreen — показывает количество свойств
+    | TablesScreen показывает количество свойств таблицы (2 для tbl_1)
+    | Виджетный | Позитивный
+
+321 | TablesScreen — поле поиска присутствует
+    | TablesScreen содержит TextField для поиска таблиц
+    | Виджетный | Позитивный
+
+322 | TablesScreen — фильтрация по поисковому запросу
+    | Ввод "климат" скрывает "Почвенные параметры" и оставляет "Климатические данные"
+    | Виджетный | Позитивный
+
+323 | TablesScreen — очистка поиска показывает все таблицы
+    | После очистки текстового поля снова отображаются все таблицы
+    | Виджетный | Позитивный
+
+324 | TablesScreen — skeleton при загрузке
+    | Во время загрузки данных (loading state) отображаются SkeletonBox-виджеты
+    | Виджетный | Позитивный
+
+325 | TablesScreen — сообщение об ошибке загрузки
+    | При исключении в repo.fetchTables экран отображает сообщение об ошибке
+    | Виджетный | Негативный
+
+326 | TablesScreen — диалог подтверждения удаления
+    | Нажатие delete показывает диалог "Удалить таблицу?"; "Отмена" сохраняет таблицу на месте
+    | Виджетный | Позитивный
+
+327 | TablesScreen embedded — без собственного AppBar
+    | embedded=true рендерит экран без AppBar с текстом "Таблицы атрибутов"
+    | Виджетный | Позитивный
+
+── Login Screen — Widget Tests (test/widget/login_screen_test.dart) ────────────
+
+328 | LoginScreen — поля ввода отображаются
+    | Экран содержит как минимум 2 поля TextFormField
+    | Виджетный | Позитивный
+
+329 | LoginScreen — кнопка Войти отображается
+    | Текст "Войти" присутствует на экране
+    | Виджетный | Позитивный
+
+330 | LoginScreen — кнопка Зарегистрироваться отображается
+    | Текст "Зарегистрироваться" присутствует на экране
+    | Виджетный | Позитивный
+
+331 | LoginScreen — заголовок GIS Monitor
+    | Текст "GIS Monitor" присутствует на экране
+    | Виджетный | Позитивный
+
+332 | LoginScreen — поля пустые при старте
+    | Все TextFormField изначально содержат пустые строки (controller.text == '')
+    | Виджетный | Позитивный
+
+333 | LoginScreen — успешный логин приводит к уходу с экрана
+    | Ввод admin/123456 → "Войти" и "Зарегистрироваться" исчезают (переход на dashboard)
+    | Виджетный | Позитивный
+
+334 | LoginScreen — неверный пароль оставляет на экране логина
+    | Неверный пароль → кнопка "Войти" по-прежнему видна
+    | Виджетный | Негативный
+
+335 | LoginScreen — пустые поля не выполняют логин
+    | Без ввода данных после нажатия "Войти" кнопка остаётся видимой
+    | Виджетный | Негативный
+
+336 | LoginScreen — кнопка Зарегистрироваться доступна
+    | Кнопка "Зарегистрироваться" найдена и является интерактивным виджетом
+    | Виджетный | Позитивный
+
+337 | LoginScreen — тап Зарегистрироваться без исключений
+    | Нажатие "Зарегистрироваться" не выбрасывает необработанных исключений
+    | Виджетный | Позитивный
+
+338 | LoginScreen — нет сохранённых аккаунтов при пустых prefs
+    | При пустых prefs экран отображается нормально (MaterialApp найден в дереве виджетов)
+    | Виджетный | Позитивный
+
+── Smoke Test (test/widget_test.dart) ──────────────────────────────────────────
+
+339 | Smoke — приложение запускается и показывает экран логина
+    | Приложение успешно запускается и отображает экран с текстом "GIS Monitor"
+    | Виджетный | Позитивный
+
+════════════════════════════════════════════════════════════════════════════════
+НАГРУЗОЧНЫЕ ТЕСТЫ (test/load/)
+════════════════════════════════════════════════════════════════════════════════
+Проверяют производительность при работе с большими объёмами данных.
+Sync-операции (addFileToObject, deleteFiles, addGlobalFile) работают с
+in-memory кэшем — сотни вызовов занимают < 1 с. Async-операции (addObject,
+addLayer, register, createTable) сериализуют данные в SharedPreferences при
+каждом вызове (~270–310 мс/вызов в тестовой среде), поэтому объём меньше,
+а допустимое время — больше. Фильтрация в провайдерах — чистые вычисления,
+1000 объектов обрабатываются за < 50 мс.
+
+── Sync-операции репозитория ────────────────────────────────────────────────────
+
+343 | LOAD-01: addFileToObject × 500 — не более 600 мс
+    | 500 синхронных добавлений файла к объекту в in-memory кэш завершаются за < 600 мс;
+    | все файлы присутствуют в fetchFiles
+    | Нагрузочный | Позитивный
+
+344 | LOAD-02: deleteFiles × 300 — не более 600 мс
+    | Удаление 300 файлов из in-memory кэша завершается за < 600 мс;
+    | ни один из удалённых файлов не найден в fetchFiles
+    | Нагрузочный | Позитивный
+
+345 | LOAD-03: addGlobalFile × 200 — не более 400 мс
+    | 200 синхронных добавлений в глобальное хранилище завершаются за < 400 мс;
+    | все файлы присутствуют в getGlobalFiles
+    | Нагрузочный | Позитивный
+
+346 | LOAD-04: attachFileToObject × 200 с дедупликацией — не более 400 мс
+    | 200 файлов прикрепляются к объекту, затем прикрепляются повторно (400 вызовов);
+    | всё завершается за < 400 мс без дублирования записей
+    | Нагрузочный | Позитивный
+
+── Async-операции репозитория (SharedPreferences I/O) ──────────────────────────
+
+347 | LOAD-05: addObject × 20 — не более 8000 мс
+    | 20 последовательных async-добавлений GIS-объектов завершаются за < 8 с;
+    | все объекты доступны через fetchObjects
+    | Нагрузочный | Позитивный
+
+348 | LOAD-06: addLayer × 15 — не более 6000 мс
+    | 15 последовательных async-добавлений слоёв к одному объекту завершаются за < 6 с;
+    | все слои доступны через fetchLayers
+    | Нагрузочный | Позитивный
+
+349 | LOAD-07: register × 5 пользователей — не более 3000 мс
+    | Регистрация 5 новых пользователей завершается за < 3 с;
+    | все логины помечаются как занятые через isLoginTaken
+    | Нагрузочный | Позитивный
+
+350 | LOAD-08: createTable × 10 (3 свойства) — не более 5000 мс
+    | Создание 10 таблиц с тремя свойствами каждая завершается за < 5 с;
+    | все таблицы доступны через fetchTables
+    | Нагрузочный | Позитивный
+
+── Фильтрация в провайдерах (чистые вычисления) ────────────────────────────────
+
+351 | LOAD-09: текстовый поиск по 1000 объектам — не более 50 мс
+    | filteredObjectsProvider фильтрует 1000 объектов по запросу "пшеница" за < 50 мс;
+    | возвращает > 300 совпадений (каждый 3-й объект содержит "пшеница")
+    | Нагрузочный | Позитивный
+
+352 | LOAD-10: 50 последовательных смен поискового запроса по 1000 объектам — не более 300 мс
+    | 50 последовательных изменений objectSearchProvider с пересчётом filteredObjectsProvider
+    | по списку из 1000 объектов завершаются за < 300 мс
+    | Нагрузочный | Позитивный
+
+353 | LOAD-11: текстовый поиск по 500 таблицам — не более 30 мс
+    | filteredTablesProvider фильтрует 500 таблиц по запросу "климат" за < 30 мс;
+    | возвращает > 100 совпадений (каждая 4-я таблица)
+    | Нагрузочный | Позитивный
+
+════════════════════════════════════════════════════════════════════════════════
+E2E ТЕСТЫ (integration_test/)
+════════════════════════════════════════════════════════════════════════════════
+
+── App Integration Tests (integration_test/app_integration_test.dart) ──────────
+
+354 | E2E — полный цикл логина
+    | Запуск приложения → ввод admin/123456 → нажатие "Войти" → экран "Войдите в систему" исчезает
+    | Интеграционный | Позитивный
+
+355 | E2E — регистрация нового пользователя
+    | Нажатие "Зарегистрироваться" переводит на экран с заголовком "Создайте аккаунт"
+    | Интеграционный | Позитивный
+
+356 | E2E — открытие раздела Таблицы
+    | После логина нажатие иконки Tables открывает раздел таблиц атрибутов
+    | Интеграционный | Позитивный
+
+================================================================================
+ИТОГО
+================================================================================
+
+Всего тестов: 356
+
+По типу (тип 1):
+  Блочный        — 305  (тесты моделей, провайдеров, репозиториев, сервисов)
+  Виджетный      —  34  (тесты UI-экранов с WidgetTester)
+  Нагрузочный    —  14  (производительность при больших объёмах данных; test/load/)
+  Интеграционный —   3  (E2E тесты на реальном устройстве/эмуляторе)
+
+По типу (тип 2):
+  Позитивный  — 345  (успешные сценарии, ожидаемое поведение)
+  Негативный  — 109  (ошибки, граничные случаи, невалидные данные)
+
+Пояснение по типам:
+  Блочный       — изолированный тест одного класса/функции без UI
+  Виджетный     — тест UI-компонента через WidgetTester без реального устройства
+  Нагрузочный   — проверка скорости и устойчивости при большом объёме данных
+  Интеграционный — E2E тест на реальном устройстве/эмуляторе (IntegrationTestWidgetsFlutterBinding)
