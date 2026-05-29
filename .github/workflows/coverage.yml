@@ -17,7 +17,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'   # убрали точную версию
+          channel: 'stable'
       
       - name: Install dependencies
         run: flutter pub get
@@ -37,16 +37,54 @@ jobs:
           name: coverage-report
           path: coverage/html/
       
-      - name: Check coverage threshold
+      - name: Check coverage thresholds for critical folders
         run: |
-          COVERAGE=$(lcov --summary coverage/lcov.info 2>&1 | grep "lines" | awk '{print $2}' | sed 's/%//')
-          echo "Coverage: ${COVERAGE}%"
-          if [ -z "$COVERAGE" ]; then
-            echo "⚠️ Could not determine coverage"
-            exit 0
-          fi
-          if (( $(echo "$COVERAGE < 70" | bc -l 2>/dev/null || echo "0") )); then
-            echo "❌ Coverage ${COVERAGE}% is below 70% threshold"
+          FAILED=0
+          THRESHOLD=70
+          
+          # Функция для проверки покрытия конкретной папки
+          check_folder_coverage() {
+            local FOLDER=$1
+            local COVERAGE_FILE="coverage/${FOLDER}.lcov"
+            
+            # Фильтруем lcov.info только для нужной папки
+            lcov --extract coverage/lcov.info "*/${FOLDER}*" --output-file "$COVERAGE_FILE" 2>/dev/null || {
+              echo "⚠️ Folder $FOLDER has no coverage data or no files"
+              return 0
+            }
+            
+            # Получаем процент покрытия
+            local COVERAGE=$(lcov --summary "$COVERAGE_FILE" 2>&1 | grep "lines" | awk '{print $2}' | sed 's/%//')
+            
+            if [ -z "$COVERAGE" ]; then
+              echo "⚠️ Could not determine coverage for $FOLDER"
+              return 0
+            fi
+            
+            echo "📊 $FOLDER coverage: ${COVERAGE}%"
+            
+            if (( $(echo "$COVERAGE < $THRESHOLD" | bc -l 2>/dev/null || echo "0") )); then
+              echo "❌ $FOLDER coverage ${COVERAGE}% is below ${THRESHOLD}% threshold"
+              FAILED=1
+            else
+              echo "✅ $FOLDER coverage ${COVERAGE}% meets threshold"
+            fi
+          }
+          
+          # Проверяем каждую критическую папку
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Checking coverage for critical folders (threshold: ${THRESHOLD}%)"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          check_folder_coverage "lib/providers"
+          check_folder_coverage "lib/repositories"
+          check_folder_coverage "lib/models"
+          
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          if [ $FAILED -eq 1 ]; then
+            echo "❌ Some critical folders have insufficient coverage"
             exit 1
           fi
-          echo "✅ Coverage ${COVERAGE}% meets threshold"
+          
+          echo "✅ All critical folders have at least ${THRESHOLD}% coverage"
