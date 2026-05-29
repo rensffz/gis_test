@@ -8,7 +8,6 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rensffz_gis_test&metric=coverage)](https://sonarcloud.io/summary/new_code?id=rensffz_gis_test)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=rensffz_gis_test&metric=bugs)](https://sonarcloud.io/summary/new_code?id=rensffz_gis_test)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rensffz_gis_test&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=rensffz_gis_test)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=rensffz_gis_test&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=rensffz_gis_test)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=rensffz_gis_test&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=rensffz_gis_test)
 
 ## Описание
