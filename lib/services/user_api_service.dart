@@ -4,6 +4,7 @@
   // Does NOT contain business logic — only network I/O.
 
   import 'package:dio/dio.dart';
+  import 'package:flutter/foundation.dart';
   import '../models/app_models.dart';
 
   // ─── DTO ──────────────────────────────────────────────────────
@@ -102,6 +103,11 @@
           headers: {'Content-Type': 'application/json'},
         ),
       );
+    }
+
+    @visibleForTesting
+    UserApiService.withDio(Dio dio) {
+      _dio = dio;
     }
 
     // ── GET /user ─────────────────────────────────────────────
