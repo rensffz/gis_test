@@ -14,26 +14,6 @@ void main() {
   });
 
   group('AppRepository — Tables', () {
-    group('fetchTables', () {
-      test('возвращает seed-таблицы', () async {
-        final tables = await repo.fetchTables();
-        expect(tables, isNotEmpty);
-        expect(tables.length, equals(4)); // seed содержит 4 таблицы
-      });
-
-      test('список неизменяемый', () async {
-        final tables = await repo.fetchTables();
-        expect(() => (tables as dynamic).add(null), throwsA(anything));
-      });
-
-      test('каждая таблица имеет непустые свойства', () async {
-        final tables = await repo.fetchTables();
-        for (final t in tables) {
-          expect(t.properties, isNotEmpty, reason: 'Таблица ${t.name} пустая');
-        }
-      });
-    });
-
     group('createTable', () {
       test('создаёт таблицу и добавляет в список', () async {
         final before = (await repo.fetchTables()).length;

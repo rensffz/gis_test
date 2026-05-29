@@ -5,7 +5,10 @@
       "Bash(flutter test *)",
       "Bash(flutter pub *)",
       "WebFetch(domain:overpass-api.de)",
-      "Bash(grep -v \"^\\\\s*$\")"
+      "Bash(grep -v \"^\\\\s*$\")",
+      "Bash(lcov --summary coverage/lcov.info)",
+      "Bash(lcov --summary coverage/lcov.info --list-full-path)",
+      "Bash(lcov --list coverage/lcov.info)"
     ]
   }
 }

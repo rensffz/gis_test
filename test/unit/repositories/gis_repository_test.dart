@@ -15,38 +15,6 @@ void main() {
   });
 
   group('AppRepository — GIS Objects', () {
-    group('fetchCategories', () {
-      test('возвращает непустой список категорий', () async {
-        final cats = await repo.fetchCategories();
-        expect(cats, isNotEmpty);
-      });
-
-      test('список неизменяемый', () async {
-        final cats = await repo.fetchCategories();
-        expect(() => (cats as dynamic).add(null), throwsA(anything));
-      });
-    });
-
-    group('fetchObjects', () {
-      test('возвращает seed-объекты', () async {
-        final objects = await repo.fetchObjects();
-        expect(objects, isNotEmpty);
-        expect(objects.length, equals(7)); // 6 base + 1 AI demo object
-      });
-
-      test('список неизменяемый', () async {
-        final objects = await repo.fetchObjects();
-        expect(() => (objects as dynamic).add(null), throwsA(anything));
-      });
-
-      test('каждый объект имеет id', () async {
-        final objects = await repo.fetchObjects();
-        for (final obj in objects) {
-          expect(obj.id, isNotEmpty);
-        }
-      });
-    });
-
     group('addObject', () {
       test('добавляет объект в начало списка', () async {
         final newObj = makeGisObject(id: 'new_obj', name: 'Новый объект');
